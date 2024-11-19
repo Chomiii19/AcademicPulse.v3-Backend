@@ -1,0 +1,102 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  surname String
+  firstname String
+  middlename String?
+  extension String?
+  role Role @default(user)
+  email String @unique
+  phoneNumber String @unique
+  password String
+  isVerified Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ownedSchool School? @relation("SchoolOwner")
+
+  schoolId Int?
+  school School? @relation("SchoolUsers", fields: [schoolId], references: [id]) 
+
+  @@index([email])
+  @@map("users")
+}
+
+model School {
+  id Int @id @default(autoincrement())
+  schoolId String? @unique
+  name String
+  address String
+  email String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ownerId Int @unique
+  owner User @relation("SchoolOwner", fields: [ownerId], references: [id])
+  
+  users User[] @relation("SchoolUsers")
+  students Student[]
+  schoolLog SchoolLog[]
+
+  @@index([schoolId])
+  @@map("schools")
+}
+
+model Student {
+  studentId String @id
+  schoolId String
+  surname String
+  firstname String
+  middlename String?
+  extension String?
+  course String
+  yearLevel Int
+  email String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  school School @relation(fields: [schoolId], references: [schoolId], onDelete: Cascade)
+  schoolLog SchoolLog[]
+
+  @@index([schoolId])
+  @@map("students")
+}
+
+model SchoolLog {
+  id Int @id @default(autoincrement())
+  studentId String
+  schoolId String
+  timestamp DateTime @default(now())
+  type Type
+  student Student @relation(fields: [studentId], references: [studentId])
+  school School @relation(fields: [schoolId], references: [schoolId], onDelete: Cascade)
+
+  @@index([studentId])
+  @@index([schoolId])
+  @@index([schoolId, timestamp])
+  @@map("schoollogs")
+}
+
+enum Role {
+  user
+  admin
+  owner
+}
+
+enum Type {
+  entry
+  exit
+}
