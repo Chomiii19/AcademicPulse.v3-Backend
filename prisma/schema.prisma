@@ -29,8 +29,8 @@ model User {
 
   ownedSchool School? @relation("SchoolOwner")
 
-  schoolId Int?
-  school School? @relation("SchoolUsers", fields: [schoolId], references: [id]) 
+  schoolId String?
+  school School? @relation("SchoolUsers", fields: [schoolId], references: [schoolId]) 
 
   @@index([email])
   @@map("users")
@@ -45,8 +45,8 @@ model School {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  ownerId Int @unique
-  owner User @relation("SchoolOwner", fields: [ownerId], references: [id])
+  ownerEmail String @unique
+  owner User @relation("SchoolOwner", fields: [ownerEmail], references: [email])
   
   users User[] @relation("SchoolUsers")
   students Student[]
@@ -57,7 +57,8 @@ model School {
 }
 
 model Student {
-  studentId String @id
+  id Int @default(autoincrement())
+  studentId String @id @unique
   schoolId String
   surname String
   firstname String
@@ -65,7 +66,9 @@ model Student {
   extension String?
   course String
   yearLevel Int
-  email String @unique
+  isValidated Boolean @default(false)
+  inSchool Boolean @default(false)
+  email String? @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   school School @relation(fields: [schoolId], references: [schoolId], onDelete: Cascade)

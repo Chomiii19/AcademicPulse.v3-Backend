@@ -3,13 +3,18 @@ import catchAsync from "../utils/catchAsync";
 import AppError from "../errors/appError";
 import AuthService from "../services/authService";
 import IUser from "../@types/userInterface";
+import sendMail from "../utils/sendEmail";
+import signToken from "../services/signToken";
 
 const signup = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     await AuthService.findUserByEmail(req.body.email);
 
-    const user = (await AuthService.createUser(req)) as IUser;
+    const user = await AuthService.createUser(req);
 
+    const token = signToken({ email: user.email, id: user.id });
+
+    sendMail("User Verification (AcadPulse)", user, "verifyAccount", token);
     AuthService.createSendToken(user, 201, res);
   }
 );
@@ -37,7 +42,7 @@ const login = catchAsync(
 
 const verifyUserAccount = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    await AuthService.verifyUser(Number(req.params.id));
+    await AuthService.verifyUser(String(req.params.token));
 
     res.redirect("/app");
   }

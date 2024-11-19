@@ -1,8 +1,14 @@
 import nodemailer from "nodemailer";
 import IUser from "../@types/userInterface";
-import userVerification from "./template/emailTemplate";
+import userVerification from "./template/verifyEmailTemplate";
+import addCollab from "./template/addCollabTemplate";
 
-const sendMail = async function (subject: string, receiver: IUser) {
+const sendMail = async function (
+  subject: string,
+  receiver: IUser,
+  type: "verifyAccount" | "addCollab",
+  token: string
+) {
   try {
     const email = process.env.EMAIL;
     const password = process.env.EMAIL_PASSWORD;
@@ -25,14 +31,18 @@ const sendMail = async function (subject: string, receiver: IUser) {
       to: [receiver.email],
       subject: subject,
       text: "",
-      html: userVerification(receiver.firstname, receiver.id),
+      html: `${
+        type === "verifyAccount"
+          ? userVerification(receiver.firstname, token)
+          : addCollab(receiver.firstname, token)
+      }`,
     };
 
     // @ts-expect-error
     const info = await transport.sendMail(mailOptions);
     console.log("Email sent successfully");
   } catch (error) {
-    console.error("Failed to send email");
+    console.error("Failed to send email", error);
   }
 };
 

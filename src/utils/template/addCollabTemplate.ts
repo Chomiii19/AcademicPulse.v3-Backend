@@ -1,6 +1,6 @@
 import IUser from "../../@types/userInterface";
 
-const userVerification = (name: IUser["firstname"], id: IUser["id"]) => {
+const addCollab = (name: IUser["firstname"], token: string) => {
   return `
       <!DOCTYPE html>
   <html>
@@ -144,7 +144,7 @@ const userVerification = (name: IUser["firstname"], id: IUser["id"]) => {
             <!-- start copy -->
             <tr>
               <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                <p style="margin: 0;">Hello ${name}, tap the button below to confirm your email address. If you didn't create an account, you can safely delete this email.</p>
+                <p style="margin: 0;">Hello ${name}, tap the button below to accept collaboration. If you don't want to accept collaboration, you can safely delete this email.</p>
               </td>
             </tr>
             <!-- end copy -->
@@ -158,7 +158,7 @@ const userVerification = (name: IUser["firstname"], id: IUser["id"]) => {
                       <table border="0" cellpadding="0" cellspacing="0">
                         <tr>
                           <td align="center" bgcolor="#1a82e2" style="border-radius: 6px;">
-                            <a href="https://academicpulse.onrender.com/users/verify/:${id}" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Verify Email Address</a>
+                            <a href="http://127.0.0.1:3000/api/v1/verify/${token}" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Verify Email Address</a>
                           </td>
                         </tr>
                       </table>
@@ -207,4 +207,4 @@ const userVerification = (name: IUser["firstname"], id: IUser["id"]) => {
       `;
 };
 
-export default userVerification;
+export default addCollab;

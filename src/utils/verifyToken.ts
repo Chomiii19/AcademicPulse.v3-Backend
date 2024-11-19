@@ -1,10 +1,8 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 
-const verifyToken = async (token: string): Promise<JwtPayload> => {
-  return (await jwt.verify(
-    token,
-    process.env.SECRET_KEY as string
-  )) as JwtPayload;
+//@ts-expect-error
+const verifyToken = async (token: string): any => {
+  return await jwt.verify(token, process.env.SECRET_KEY as string);
 };
 
 export default verifyToken;
