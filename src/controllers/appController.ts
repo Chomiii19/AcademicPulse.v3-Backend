@@ -34,6 +34,11 @@ const validateId = catchAsync(
 
 const addCollaborators = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    if (req.user.role !== 1)
+      return next(
+        new AppError("Only the owner of this school can set permission.", 401)
+      );
+
     const { collaborator, role } = await AppService.addCollaborators(req);
 
     const school = await prisma.school.findFirst({
@@ -68,6 +73,33 @@ const acceptCollab = catchAsync(
     await AppService.acceptCollab(req);
 
     res.redirect("/");
+  }
+);
+
+const setUserRole = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    if (req.user.role !== 1)
+      return next(
+        new AppError("Only the owner of this school can set permission.", 401)
+      );
+
+    const { email, roleStatus } = await AppService.setUserRole(req);
+
+    res.status(200).json({
+      status: "Success",
+      message: `Collaborator: ${email}'s role is now set to ${roleStatus}`,
+    });
+  }
+);
+
+const getAllCollaborators = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const collaborators = AppService.getAllColaborators(req);
+
+    res.status(200).json({
+      status: "Success",
+      data: { collaborators },
+    });
   }
 );
 
@@ -145,6 +177,61 @@ const getAllStudentsInSchool = catchAsync(
   }
 );
 
-//GET ALL STUDENTS (FOR INSCHOOL)
+const getAllStudentsInSchoolStatus = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const students = await AppService.getAllStudentsInSchoolStatus(req);
 
-export { createSchool, validateId, addCollaborators, acceptCollab };
+    res.status(200).json({
+      status: "Success",
+      data: { students },
+    });
+  }
+);
+
+const getStudentLogs = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { studentId, userTimeZone, startDate, endDate } = req.body;
+
+    const records = await prisma.$queryRaw`
+  SELECT * 
+  FROM your_table
+  WHERE 
+    schoolId = ${req.user.schoolId} AND 
+    studentId = ${studentId} AND 
+    createdAt AT TIME ZONE 'UTC' AT TIME ZONE ${userTimeZone} 
+    BETWEEN ${startDate} AND ${endDate};
+`;
+
+    res.status(200).json({
+      status: "Success",
+      data: { records },
+    });
+  }
+);
+
+const validatedIdGraphData = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {}
+);
+
+const schoolLogGraphData = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {}
+);
+
+export {
+  createSchool,
+  validateId,
+  addCollaborators,
+  acceptCollab,
+  setUserRole,
+  getAllCollaborators,
+  enrolledCount,
+  validatedIdCount,
+  validatedIdGraphData, //Bargraph
+  countStudentsInSchool,
+  getAllStudentsInSchool,
+  getAllStudentsInSchoolStatus,
+  getStudentLogs,
+  studentLogEntrance,
+  studentLogExit,
+  schoolLogGraphData, //Linegraph
+};

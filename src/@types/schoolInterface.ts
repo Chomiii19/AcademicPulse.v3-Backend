@@ -1,9 +1,12 @@
 interface ISchool {
   id: number;
-  schoolId: string;
+  schoolId?: string | null;
   name: string;
+  address: string;
   email: string;
-  ownerId: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+  ownerEmail: string;
 }
 
 export default ISchool;

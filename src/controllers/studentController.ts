@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import StudentService from "../services/studentService";
 import catchAsync from "../utils/catchAsync";
 
@@ -14,4 +14,16 @@ const getAllStudents = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export { getAllStudents };
+const getStudent = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {}
+);
+
+const updateStudent = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {}
+);
+
+const deleteStudent = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {}
+);
+
+export { getAllStudents, getStudent, updateStudent, deleteStudent };

@@ -12,25 +12,40 @@ router
   .route("/id-validation/submit")
   .post(rateLimiter.validateIdLimiter, appController.validateId);
 
-router.route("/checkout-full-access").post(checkoutSession);
-router.route("/upload").post(uploadConfig, importData);
+router.route("/sponsor").post(checkoutSession);
+router.route("/upload-record/submit").post(uploadConfig, importData);
 router.route("/delete-record").delete(deleteData);
 
-router.route("/create-school").post(appController.createSchool);
+router.route("/create-school/submit").post(appController.createSchool);
 router.route("/add-colaborators").post(appController.addCollaborators);
 router.route("/accept-collab").get(appController.acceptCollab);
+router.route("/get-collaborators").get(appController.getAllCollaborators);
+router.route("/set-role").post(appController.setUserRole);
 
-// router
-//   .route("/student-log/entrance/submit")
-//   .post(appController.studentLogEntrance);
-// router.route("/student-log/exit/submit").post(appController.studentLogExit);
-// router.route("/validated-id-stats").get(appController.validatedIdStats);
-// router.route("/student-log-stats").post(appController.studentLogStats);
-// router.route("/school-log-stats").get(appController.schoolLogStats);
-// router.route("/enrolled-students").get(appController.enrolledStats);
-// router.route("/validated-students").get(appController.validatedStats);
-// router.route("/students-inschool").get(appController.countStudentsInSchool);
-// router.route("/total-users").get(appController.totalUsers);
-// router.route("/getAllStudents").get(studentController.getAllStudents);
+router.route("/enrolled-students").get(appController.enrolledCount);
+router.route("/validated-id-count").get(appController.validatedIdCount);
+
+router
+  .route("/students-inschool-count")
+  .get(appController.countStudentsInSchool);
+router.route("/students-inschool").get(appController.countStudentsInSchool);
+router
+  .route("/students-inschool-status")
+  .get(appController.getAllStudentsInSchoolStatus);
+router.route("/student-logs").post(appController.getStudentLogs);
+
+router
+  .route("/student-log/entrance/submit")
+  .post(appController.studentLogEntrance);
+router.route("/student-log/exit/submit").post(appController.studentLogExit);
+
+router.route("/get-students").get(studentController.getAllStudents);
+router.route("/get-student").get(studentController.getStudent);
+router.route("/update-tudents").get(studentController.updateStudent);
+router.route("/delete-tudents").get(studentController.deleteStudent);
+
+//Graphs
+router.route("/school-logs-data").get(appController.schoolLogGraphData);
+router.route("/validated-ids-data").get(appController.validatedIdGraphData);
 
 export default router;

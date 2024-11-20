@@ -19,7 +19,7 @@ model User {
   firstname String
   middlename String?
   extension String?
-  role Role @default(user)
+  role Int @default(3)
   email String @unique
   phoneNumber String @unique
   password String
@@ -91,12 +91,6 @@ model SchoolLog {
   @@index([schoolId])
   @@index([schoolId, timestamp])
   @@map("schoollogs")
-}
-
-enum Role {
-  user
-  admin
-  owner
 }
 
 enum Type {

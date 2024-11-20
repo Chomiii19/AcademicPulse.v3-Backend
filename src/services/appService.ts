@@ -2,11 +2,14 @@ import { Request } from "express";
 import { PrismaClient } from "@prisma/client";
 import AppError from "../errors/appError";
 import verifyToken from "../utils/verifyToken";
+import IStudent from "../@types/studentInterface";
+import IUser from "../@types/userInterface";
+import ISchool from "../@types/schoolInterface";
 
 const prisma = new PrismaClient();
 
 class AppService {
-  async createSchool(req: Request) {
+  async createSchool(req: Request): Promise<ISchool> {
     const { schoolId, name, address, email } = req.body;
 
     const school = await prisma.school.create({
@@ -18,7 +21,7 @@ class AppService {
         email: req.user.email,
       },
       data: {
-        role: "owner",
+        role: 1,
         schoolId: school.schoolId,
       },
     });
@@ -26,7 +29,7 @@ class AppService {
     return school;
   }
 
-  async validateId(req: Request) {
+  async validateId(req: Request): Promise<IStudent> {
     const { studentId } = req.body;
 
     if (!studentId) throw new AppError("QR code value is empty", 400);
@@ -48,7 +51,9 @@ class AppService {
     return student;
   }
 
-  async addCollaborators(req: Request) {
+  async addCollaborators(
+    req: Request
+  ): Promise<{ collaborator: IUser; role: IUser["role"] }> {
     const { email, role } = req.body;
 
     const collaborator = await prisma.user.findFirst({ where: email });
@@ -64,7 +69,7 @@ class AppService {
     return { collaborator, role };
   }
 
-  async acceptCollab(req: Request) {
+  async acceptCollab(req: Request): Promise<void> {
     const token = req.params.token;
     const decoded = await verifyToken(token);
 
@@ -72,6 +77,49 @@ class AppService {
       where: { email: decoded.email },
       data: { role: decoded.role, schoolId: decoded.schoolId },
     });
+  }
+
+  async setUserRole(
+    req: Request
+  ): Promise<{ email: string; roleStatus: string }> {
+    const { email, role } = req.body;
+
+    const collaborator = await prisma.user.findFirst({
+      where: { schoolId: req.user.schoolId, email },
+    });
+
+    if (!collaborator) throw new AppError("User does not exist", 404);
+
+    await prisma.user.update({
+      where: { email: collaborator.email },
+      data: { role },
+    });
+
+    const roleStatus = role === 2 ? "admin" : "user";
+
+    return { email: collaborator.email, roleStatus };
+  }
+
+  async getAllColaborators(req: Request): Promise<
+    {
+      role: number;
+      surname: string;
+      firstname: string;
+    }[]
+  > {
+    const schoolId = req.body;
+
+    const collaborators = await prisma.user.findMany({
+      where: { schoolId },
+      select: { surname: true, firstname: true, role: true },
+      orderBy: [
+        {
+          role: "asc",
+        },
+      ],
+    });
+
+    return collaborators;
   }
 
   async studentLogEntrance(studentId: string, req: Request): Promise<void> {
@@ -150,9 +198,25 @@ class AppService {
     return countStudentsInSchool;
   }
 
-  async getAllStudentsInSchool(req: Request): Promise<any> {
+  async getAllStudentsInSchool(req: Request): Promise<IStudent[]> {
     const students = await prisma.student.findMany({
       where: { schoolId: req.user.schoolId, inSchool: true },
+    });
+
+    return students;
+  }
+
+  async getAllStudentsInSchoolStatus(req: Request): Promise<
+    {
+      surname: string;
+      firstname: string;
+      course: string;
+      inSchool: boolean;
+    }[]
+  > {
+    const students = await prisma.student.findMany({
+      where: { schoolId: req.user.schoolId },
+      select: { surname: true, firstname: true, course: true, inSchool: true },
     });
 
     return students;

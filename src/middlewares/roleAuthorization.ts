@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 
 const roleAuthorization = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const roles = ["admin", "owner"];
+    const roles = [1, 2];
 
     const user = await prisma.user.findFirst({
       where: { email: req.user.email },
