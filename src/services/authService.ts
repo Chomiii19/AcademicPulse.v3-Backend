@@ -3,13 +3,13 @@ import { Request, Response } from "express";
 import { compareSync, hashSync } from "bcryptjs";
 import AppError from "../errors/appError";
 import IUser from "../@types/userInterface";
-import signToken from "./signToken";
+import signToken from "../utils/signToken";
 import verifyToken from "../utils/verifyToken";
 
 const prisma = new PrismaClient();
 
 class AuthService {
-  createSendToken = (user: IUser, statusCode: number, res: Response) => {
+  createSendToken = (user: IUser, statusCode: number, res: Response): void => {
     const token = signToken({ id: user.id, email: user.email });
     const cookieExpiry = Number(process.env.JWT_COOKIE_EXPIRES_IN);
 
@@ -52,7 +52,7 @@ class AuthService {
     return user;
   }
 
-  async findUserByEmail(email: string) {
+  async findUserByEmail(email: string): Promise<void> {
     const user = await prisma.user.findFirst({
       where: { email },
     });
@@ -72,7 +72,7 @@ class AuthService {
     return user;
   }
 
-  async verifyUser(token: string) {
+  async verifyUser(token: string): Promise<void> {
     const decoded = await verifyToken(token);
     console.log(decoded);
     await prisma.user.update({

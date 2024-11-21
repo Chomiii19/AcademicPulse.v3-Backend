@@ -16,9 +16,12 @@ router.route("/sponsor").post(checkoutSession);
 router.route("/upload-record/submit").post(uploadConfig, importData);
 router.route("/delete-record").delete(deleteData);
 
-router.route("/create-school/submit").post(appController.createSchool);
+router
+  .route("/register-school/submit")
+  .post(uploadConfig, appController.registerSchool);
+router.route("/verify-school/:token").get(appController.verifySchool);
 router.route("/add-colaborators").post(appController.addCollaborators);
-router.route("/accept-collab").get(appController.acceptCollab);
+router.route("/accept-collab/:token").get(appController.acceptCollab);
 router.route("/get-collaborators").get(appController.getAllCollaborators);
 router.route("/set-role").post(appController.setUserRole);
 

@@ -1,4 +1,7 @@
 import { Request } from "express";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 class StudentService {
   async getAllStudentsQuery(req: Request) {
@@ -6,7 +9,7 @@ class StudentService {
 
     if (queryObj.page) delete queryObj.page;
 
-    let studentsQuery = Student.find(queryObj);
+    let studentsQuery = prisma.student.findMany({ where: { queryObj } });
 
     if (req.query.page) {
       const page = Number(req.query.page) * 1;

@@ -12,20 +12,34 @@ const storage = multer.diskStorage({
   },
 
   filename: function (req, file, cb) {
-    cb(null, "studentRecord.json");
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+    cb(null, `${uniqueSuffix}-${file.originalname}`);
   },
 });
 
+const fileFilter = function (
+  req: Express.Request,
+  file: Express.Multer.File,
+  cb: multer.FileFilterCallback
+) {
+  const allowedMimeTypes = [
+    "image/jpeg",
+    "image/png",
+    "application/pdf",
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  ];
+
+  if (allowedMimeTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new AppError("Invalid file type!", 400));
+  }
+};
+
 const uploadConfig = multer({
   storage,
-  fileFilter: function (req, file, cb) {
-    if (file.mimetype !== "application/json")
-      return cb(
-        new AppError("Invalid file type. File must be in JSON format", 400)
-      );
-
-    cb(null, true);
-  },
+  fileFilter,
 }).single("file");
 
 export default uploadConfig;

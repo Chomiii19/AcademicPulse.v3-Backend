@@ -3,20 +3,36 @@ import { PrismaClient } from "@prisma/client";
 import catchAsync from "../utils/catchAsync";
 import AppService from "../services/appService";
 import sendMail from "../utils/sendEmail";
-import signToken from "../services/signToken";
+import signToken from "../utils/signToken";
 import AppError from "../errors/appError";
 
 const prisma = new PrismaClient();
 
-const createSchool = catchAsync(
+const registerSchool = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const school = await AppService.createSchool(req);
+    const token = await AppService.registerSchool(req);
+
+    await sendMail(
+      "New School Registration",
+      req.user,
+      "verifySchool",
+      token,
+      req
+    );
 
     res.status(201).json({
       status: "Success",
-      data: {
-        school,
-      },
+    });
+  }
+);
+
+const verifySchool = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const school = AppService.verifySchool(req);
+
+    res.status(200).json({
+      status: "Success",
+      message: "School successfully registered.",
     });
   }
 );
@@ -48,11 +64,14 @@ const addCollaborators = catchAsync(
     if (!school)
       return next(new AppError("You are not an owner of any school", 400));
 
-    const token = signToken({
-      email: collaborator.email,
-      role,
-      schoolId: school?.schoolId,
-    });
+    const token = signToken(
+      {
+        email: collaborator.email,
+        role,
+        schoolId: school?.schoolId,
+      },
+      process.env.JWT_COLLAB_EXPIRES_IN as string
+    );
 
     await sendMail(
       `${req.user.name} has invited you as collaborator at ${school?.name}.`,
@@ -218,7 +237,8 @@ const schoolLogGraphData = catchAsync(
 );
 
 export {
-  createSchool,
+  registerSchool,
+  verifySchool,
   validateId,
   addCollaborators,
   acceptCollab,

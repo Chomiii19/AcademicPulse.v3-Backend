@@ -5,20 +5,43 @@ import verifyToken from "../utils/verifyToken";
 import IStudent from "../@types/studentInterface";
 import IUser from "../@types/userInterface";
 import ISchool from "../@types/schoolInterface";
+import signToken from "../utils/signToken";
 
 const prisma = new PrismaClient();
 
 class AppService {
-  async createSchool(req: Request): Promise<ISchool> {
+  async registerSchool(req: Request) {
     const { schoolId, name, address, email } = req.body;
 
+    if (!schoolId || !name || !address || !email)
+      throw new AppError("All fields are required to be filled", 400);
+
+    const token = signToken(
+      { schoolId, name, address, email, ownerEmail: req.user.email },
+      process.env.JWT_SCHOOL_EXPIRES_IN as string
+    );
+
+    return token;
+  }
+
+  async verifySchool(req: Request): Promise<ISchool> {
+    const token = req.params.token;
+
+    const decoded = await verifyToken(token);
+
     const school = await prisma.school.create({
-      data: { schoolId, name, address, email, ownerEmail: req.user.email },
+      data: {
+        schoolId: decoded.schoolId,
+        name: decoded.name,
+        address: decoded.address,
+        email: decoded.email,
+        owner: decoded.ownerEmail,
+      },
     });
 
     await prisma.user.update({
       where: {
-        email: req.user.email,
+        email: decoded.ownerEmail,
       },
       data: {
         role: 1,
@@ -221,6 +244,8 @@ class AppService {
 
     return students;
   }
+
+  async getStudentLogs(req: Request) {}
 }
 
 export default new AppService();

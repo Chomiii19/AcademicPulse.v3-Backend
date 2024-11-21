@@ -1,6 +1,6 @@
 import IUser from "../../@types/userInterface";
 
-const userVerification = (name: IUser["firstname"], token: string) => {
+const schoolVerification = (email: string, token: string) => {
   return `
       <!DOCTYPE html>
   <html>
@@ -118,7 +118,7 @@ const userVerification = (name: IUser["firstname"], token: string) => {
           <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
             <tr>
               <td align="left" bgcolor="#ffffff" style="padding: 36px 24px 0; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; border-top: 3px solid #d4dadf;">
-                <h1 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -1px; line-height: 48px;">Verify Your Email Address</h1>
+                <h1 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -1px; line-height: 48px;">Verify School</h1>
               </td>
             </tr>
           </table>
@@ -144,7 +144,7 @@ const userVerification = (name: IUser["firstname"], token: string) => {
             <!-- start copy -->
             <tr>
               <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                <p style="margin: 0;">Hello ${name}, tap the button below to verify your email address. If you didn't create an account, you can safely delete this email.</p>
+                <p style="margin: 0;">Hello ${email} has registered a school, tap the button below to register the school. See attached files to verify the school.</p>
               </td>
             </tr>
             <!-- end copy -->
@@ -158,7 +158,7 @@ const userVerification = (name: IUser["firstname"], token: string) => {
                       <table border="0" cellpadding="0" cellspacing="0">
                         <tr>
                           <td align="center" bgcolor="#1a82e2" style="border-radius: 6px;">
-                            <a href="http://127.0.0.1:3000/api/v1/verify/${token}" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Verify Email Address</a>
+                            <a href="http://127.0.0.1:3000/api/v1/verify-school/${token}" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Verify School</a>
                           </td>
                         </tr>
                       </table>
@@ -207,4 +207,4 @@ const userVerification = (name: IUser["firstname"], token: string) => {
       `;
 };
 
-export default userVerification;
+export default schoolVerification;

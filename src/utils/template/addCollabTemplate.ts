@@ -118,7 +118,7 @@ const addCollab = (name: IUser["firstname"], token: string) => {
           <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
             <tr>
               <td align="left" bgcolor="#ffffff" style="padding: 36px 24px 0; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; border-top: 3px solid #d4dadf;">
-                <h1 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -1px; line-height: 48px;">Confirm Your Email Address</h1>
+                <h1 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -1px; line-height: 48px;">Request for Collaboration</h1>
               </td>
             </tr>
           </table>
@@ -158,7 +158,7 @@ const addCollab = (name: IUser["firstname"], token: string) => {
                       <table border="0" cellpadding="0" cellspacing="0">
                         <tr>
                           <td align="center" bgcolor="#1a82e2" style="border-radius: 6px;">
-                            <a href="http://127.0.0.1:3000/api/v1/verify/${token}" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Verify Email Address</a>
+                            <a href="http://127.0.0.1:3000/api/v1/accept-collab/${token}" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Accept Collaboration</a>
                           </td>
                         </tr>
                       </table>
@@ -172,7 +172,7 @@ const addCollab = (name: IUser["firstname"], token: string) => {
             <!-- start copy -->
             <tr>
               <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px; border-bottom: 3px solid #d4dadf">
-                <p style="margin: 0;">Cheers,<br> Technological University of the Philippines - Manila</p>
+                <p style="margin: 0;">Cheers,<br> AcadPulse</p>
               </td>
             </tr>
             <!-- end copy -->

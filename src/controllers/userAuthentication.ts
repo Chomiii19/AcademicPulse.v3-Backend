@@ -4,7 +4,7 @@ import AppError from "../errors/appError";
 import AuthService from "../services/authService";
 import IUser from "../@types/userInterface";
 import sendMail from "../utils/sendEmail";
-import signToken from "../services/signToken";
+import signToken from "../utils/signToken";
 
 const signup = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
