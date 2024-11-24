@@ -8,11 +8,15 @@ import signToken from "../utils/signToken";
 
 const signup = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.body.email) return next(new AppError("Invalid empty fields", 400));
+
     await AuthService.findUserByEmail(req.body.email);
 
     const user = await AuthService.createUser(req);
-
-    const token = signToken({ email: user.email, id: user.id });
+    const token = signToken(
+      { email: user.email, id: user.id },
+      process.env.JWT_VERIFY_ACC_EXPIRES_IN as string
+    );
 
     sendMail("User Verification (AcadPulse)", user, "verifyAccount", token);
     AuthService.createSendToken(user, 201, res);
@@ -44,7 +48,7 @@ const verifyUserAccount = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     await AuthService.verifyUser(String(req.params.token));
 
-    res.redirect("/app");
+    res.redirect(`${process.env.APP_ORIGIN}/app`);
   }
 );
 
@@ -57,7 +61,7 @@ const signout = catchAsync(
       sameSite: "strict",
     });
 
-    res.redirect("/");
+    res.redirect(`${process.env.APP_ORIGIN}`);
   }
 );
 

@@ -8,8 +8,9 @@ const prisma = new PrismaClient();
 
 const protect = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.headers);
     const token = req.cookies.authToken;
-
+    console.log(req.cookies);
     if (!token) {
       if (process.env.NODE_ENV === "production") return res.redirect("/");
       else return next(new AppError("Invalid token!", 401));

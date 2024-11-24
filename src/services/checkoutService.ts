@@ -8,7 +8,7 @@ class CheckoutService {
       payment_method_types: ["card"],
       success_url:
         "https://academicpulse.onrender.com/app/checkout-full-access/success",
-      cancel_url: "https://academicpulse.onrender.com/app",
+      cancel_url: `${process.env.APP_ORIGIN}/app`,
       customer_email: email,
       mode: "payment",
       line_items: [

@@ -35,7 +35,7 @@ const sendMail = async function (
 
       mailOptions = {
         from: {
-          name: "Technological University of the Philippines - Manila",
+          name: "AcadPulse",
           address: email,
         },
         to: [process.env.EMAIL],
@@ -54,7 +54,7 @@ const sendMail = async function (
     } else {
       mailOptions = {
         from: {
-          name: "Technological University of the Philippines - Manila",
+          name: "AcadPulse",
           address: email,
         },
         to: [receiver.email],

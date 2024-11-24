@@ -5,8 +5,11 @@ import * as rateLimiter from "../utils/rateLimit";
 import uploadConfig from "../middlewares/uploadConfig";
 import { importData, deleteData } from "../controllers/importDeleteController";
 import * as studentController from "../controllers/studentController";
+import protectedPage from "../middlewares/protetedPage";
 
 const router = express.Router();
+
+router.route("/protected-page").get(protectedPage);
 
 router
   .route("/id-validation/submit")

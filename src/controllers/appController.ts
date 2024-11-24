@@ -91,7 +91,7 @@ const acceptCollab = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     await AppService.acceptCollab(req);
 
-    res.redirect("/");
+    res.redirect(`${process.env.APP_ORIGIN}`);
   }
 );
 
