@@ -105,7 +105,6 @@ var signout = (0, catchAsync_1.default)(function (req, res, next) { return __awa
             secure: true,
             sameSite: "strict",
         });
-        res.redirect("".concat(process.env.APP_ORIGIN));
         return [2 /*return*/];
     });
 }); });

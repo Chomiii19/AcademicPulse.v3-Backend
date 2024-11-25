@@ -60,8 +60,6 @@ const signout = catchAsync(
       secure: true,
       sameSite: "strict",
     });
-
-    res.redirect(`${process.env.APP_ORIGIN}`);
   }
 );
 

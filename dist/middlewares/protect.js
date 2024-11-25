@@ -49,9 +49,7 @@ var protect = (0, catchAsync_1.default)(function (req, res, next) { return __awa
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.log(req.headers);
                 token = req.cookies.authToken;
-                console.log(req.cookies);
                 if (!token) {
                     if (process.env.NODE_ENV === "production")
                         return [2 /*return*/, res.redirect("/")];
