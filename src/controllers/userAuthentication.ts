@@ -54,11 +54,12 @@ const verifyUserAccount = catchAsync(
 
 const signout = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    res.cookie("authToken", "loggedOut", {
+    res.cookie("authToken", "", {
       expires: new Date(Date.now() + 5 * 1000),
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
+      sameSite: "none",
+      path: "/",
     });
 
     res.status(200).json({ status: "Success" });

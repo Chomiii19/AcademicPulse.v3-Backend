@@ -99,11 +99,12 @@ var verifyUserAccount = (0, catchAsync_1.default)(function (req, res, next) { re
 exports.verifyUserAccount = verifyUserAccount;
 var signout = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        res.cookie("authToken", "loggedOut", {
+        res.cookie("authToken", "", {
             expires: new Date(Date.now() + 5 * 1000),
             httpOnly: true,
             secure: true,
-            sameSite: "strict",
+            sameSite: "none",
+            path: "/",
         });
         res.status(200).json({ status: "Success" });
         return [2 /*return*/];
