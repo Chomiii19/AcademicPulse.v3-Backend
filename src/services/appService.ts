@@ -35,7 +35,7 @@ class AppService {
         name: decoded.name,
         address: decoded.address,
         email: decoded.email,
-        owner: decoded.ownerEmail,
+        ownerEmail: decoded.ownerEmail,
       },
     });
 
