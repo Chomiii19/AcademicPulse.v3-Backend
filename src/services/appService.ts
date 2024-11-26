@@ -28,7 +28,7 @@ class AppService {
     const token = req.params.token;
 
     const decoded = await verifyToken(token);
-
+    console.log(decoded);
     const school = await prisma.school.create({
       data: {
         schoolId: decoded.schoolId,
@@ -39,7 +39,10 @@ class AppService {
       },
     });
 
-    await prisma.user.update({
+    console.log(school);
+    if (!school) throw new AppError("Failed to register school", 400);
+
+    const user = await prisma.user.update({
       where: {
         email: decoded.ownerEmail,
       },
@@ -48,6 +51,10 @@ class AppService {
         schoolId: school.schoolId,
       },
     });
+
+    console.log(user);
+
+    if (!user) throw new AppError("Cannot find user", 404);
 
     return school;
   }

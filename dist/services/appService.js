@@ -61,7 +61,7 @@ var AppService = /** @class */ (function () {
     };
     AppService.prototype.verifySchool = function (req) {
         return __awaiter(this, void 0, void 0, function () {
-            var token, decoded, school;
+            var token, decoded, school, user;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -69,6 +69,7 @@ var AppService = /** @class */ (function () {
                         return [4 /*yield*/, (0, verifyToken_1.default)(token)];
                     case 1:
                         decoded = _a.sent();
+                        console.log(decoded);
                         return [4 /*yield*/, prisma.school.create({
                                 data: {
                                     schoolId: decoded.schoolId,
@@ -80,6 +81,9 @@ var AppService = /** @class */ (function () {
                             })];
                     case 2:
                         school = _a.sent();
+                        console.log(school);
+                        if (!school)
+                            throw new appError_1.default("Failed to register school", 400);
                         return [4 /*yield*/, prisma.user.update({
                                 where: {
                                     email: decoded.ownerEmail,
@@ -90,7 +94,10 @@ var AppService = /** @class */ (function () {
                                 },
                             })];
                     case 3:
-                        _a.sent();
+                        user = _a.sent();
+                        console.log(user);
+                        if (!user)
+                            throw new appError_1.default("Cannot find user", 404);
                         return [2 /*return*/, school];
                 }
             });
