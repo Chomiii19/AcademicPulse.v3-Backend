@@ -49,9 +49,9 @@ var protectedPage = function (req, res, next) { return __awaiter(void 0, void 0,
                 school = _a.sent();
                 schoolName = school ? school.name : null;
                 user = {
-                    userId: req.user.id,
                     role: req.user.role,
                     firstname: req.user.firstname,
+                    isVerified: req.user.isVerified,
                     schoolName: schoolName,
                 };
                 res.status(200).json({

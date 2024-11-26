@@ -15,9 +15,9 @@ const protectedPage = async (
   const schoolName = school ? school.name : null;
 
   const user = {
-    userId: req.user.id,
     role: req.user.role,
     firstname: req.user.firstname,
+    isVerified: req.user.isVerified,
     schoolName,
   };
 
