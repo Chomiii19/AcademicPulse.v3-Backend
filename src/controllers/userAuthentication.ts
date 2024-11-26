@@ -60,6 +60,8 @@ const signout = catchAsync(
       secure: true,
       sameSite: "strict",
     });
+
+    res.status(200).json({ status: "Success" });
   }
 );
 
