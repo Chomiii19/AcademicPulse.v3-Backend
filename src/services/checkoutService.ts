@@ -6,8 +6,7 @@ class CheckoutService {
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
-      success_url:
-        "https://academicpulse.onrender.com/app/checkout-full-access/success",
+      success_url: `${process.env.APP_ORIGIN}/app/sponsor/success`,
       cancel_url: `${process.env.APP_ORIGIN}/app`,
       customer_email: email,
       mode: "payment",
@@ -16,9 +15,9 @@ class CheckoutService {
           price_data: {
             currency: "php",
             product_data: {
-              name: "AcademicPulse Full Feature Access",
+              name: "AcadPulse Sponsorship",
               description:
-                "Get access to your own server with its own database. Allow up to 1000 requests per hour.",
+                "Become a sponsor of AcadPulse. Allow up to 1000 requests per hour.",
             },
             unit_amount: 49900,
           },
