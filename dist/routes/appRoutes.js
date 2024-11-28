@@ -39,7 +39,7 @@ router.route("/protected-page").get(protetedPage_1.default);
 router
     .route("/id-validation/submit")
     .post(rateLimiter.validateIdLimiter, appController.validateId);
-router.route("/sponsor").post(checkoutController_1.default);
+router.route("/sponsor").get(checkoutController_1.default);
 router.route("/upload-record/submit").post(uploadConfig_1.default, importDeleteController_1.importData);
 router.route("/delete-record").delete(importDeleteController_1.deleteData);
 router

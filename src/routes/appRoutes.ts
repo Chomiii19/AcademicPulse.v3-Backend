@@ -15,7 +15,7 @@ router
   .route("/id-validation/submit")
   .post(rateLimiter.validateIdLimiter, appController.validateId);
 
-router.route("/sponsor").post(checkoutSession);
+router.route("/sponsor").get(checkoutSession);
 router.route("/upload-record/submit").post(uploadConfig, importData);
 router.route("/delete-record").delete(deleteData);
 
