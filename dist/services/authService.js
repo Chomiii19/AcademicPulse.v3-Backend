@@ -53,7 +53,7 @@ var AuthService = /** @class */ (function () {
             var cookieOptions = {
                 maxAge: cookieExpiry * 24 * 60 * 60 * 1000,
                 httpOnly: true,
-                secure: true,
+                secure: false,
                 sameSite: "none",
                 path: "/",
             };

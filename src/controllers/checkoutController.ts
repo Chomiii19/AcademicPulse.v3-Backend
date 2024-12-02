@@ -10,6 +10,8 @@ const checkoutSession = catchAsync(
 
     const session = await CheckoutService.stripeConfig(req.user.email);
 
+    if (!session) return next(new AppError("Invalid Session", 400));
+
     res.status(200).json({
       status: "Success",
       session,

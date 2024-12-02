@@ -39,27 +39,39 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var catchAsync_1 = __importDefault(require("../utils/catchAsync"));
-var checkoutService_1 = __importDefault(require("../services/checkoutService"));
+var client_1 = require("@prisma/client");
 var appError_1 = __importDefault(require("../errors/appError"));
-var checkoutSession = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var session;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                if (!req.user)
-                    return [2 /*return*/, new appError_1.default("Your account does not have an email", 400)];
-                return [4 /*yield*/, checkoutService_1.default.stripeConfig(req.user.email)];
-            case 1:
-                session = _a.sent();
-                if (!session)
-                    return [2 /*return*/, next(new appError_1.default("Invalid Session", 400))];
-                res.status(200).json({
-                    status: "Success",
-                    session: session,
-                });
-                return [2 /*return*/];
-        }
-    });
-}); });
-exports.default = checkoutSession;
+var prisma = new client_1.PrismaClient();
+var StudentService = /** @class */ (function () {
+    function StudentService() {
+    }
+    StudentService.prototype.getAllStudents = function (req) {
+        return __awaiter(this, void 0, void 0, function () {
+            var page, students, totalStudents, totalPages;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        page = Number(req.query.page);
+                        return [4 /*yield*/, prisma.student.findMany({
+                                where: { schoolId: req.user.schoolId },
+                                skip: (page - 1) * 10,
+                                take: 10,
+                            })];
+                    case 1:
+                        students = _a.sent();
+                        if (!students)
+                            throw new appError_1.default("No students found", 404);
+                        return [4 /*yield*/, prisma.student.count({
+                                where: { schoolId: req.user.schoolId },
+                            })];
+                    case 2:
+                        totalStudents = _a.sent();
+                        totalPages = Math.ceil(totalStudents / 10);
+                        return [2 /*return*/, { students: students, totalStudents: totalStudents, totalPages: totalPages }];
+                }
+            });
+        });
+    };
+    return StudentService;
+}());
+exports.default = new StudentService();

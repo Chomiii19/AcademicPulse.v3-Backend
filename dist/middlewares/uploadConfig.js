@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var multer_1 = __importDefault(require("multer"));
+// import { fileURLToPath } from "url";
 var path_1 = __importDefault(require("path"));
 var appError_1 = __importDefault(require("../errors/appError"));
 var storage = multer_1.default.diskStorage({

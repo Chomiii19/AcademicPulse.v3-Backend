@@ -40,12 +40,36 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs_1 = __importDefault(require("fs"));
+var xlsx_1 = __importDefault(require("xlsx"));
 var client_1 = require("@prisma/client");
 var appError_1 = __importDefault(require("../errors/appError"));
 var prisma = new client_1.PrismaClient();
 var importDeleteService = /** @class */ (function () {
     function importDeleteService() {
     }
+    importDeleteService.prototype.excelToJson = function (filepath, req) {
+        var workbook = xlsx_1.default.readFile(filepath);
+        var sheetName = workbook.SheetNames[0];
+        var worksheet = workbook.Sheets[sheetName];
+        var rawData = xlsx_1.default.utils.sheet_to_json(worksheet);
+        return rawData.map(function (data, i) {
+            var studentId = "".concat(req.user.schoolId, "-").concat(new Date()
+                .getFullYear()
+                .toString()
+                .slice(-2), "-").concat(i + 1);
+            return {
+                studentId: studentId,
+                schoolId: req.user.schoolId,
+                surname: data["surname"],
+                firstname: data["firstname"],
+                middlename: data["middlename"] || null,
+                extension: data["extension"] || null,
+                course: data["course"],
+                yearLevel: data["yearLevel"],
+                email: data["email"] || null,
+            };
+        });
+    };
     importDeleteService.prototype.importAllData = function (req, next) {
         return __awaiter(this, void 0, void 0, function () {
             var filepath, studentsData;
@@ -55,13 +79,15 @@ var importDeleteService = /** @class */ (function () {
                         if (!req.file)
                             return [2 /*return*/, next(new appError_1.default("No file uploaded.", 400))];
                         filepath = req.file.path;
-                        studentsData = JSON.parse(fs_1.default.readFileSync(filepath, "utf-8"));
-                        return [4 /*yield*/, prisma.student.createMany(studentsData)];
+                        studentsData = this.excelToJson(filepath, req);
+                        if (!studentsData)
+                            throw new appError_1.default("Invalid file entry", 400);
+                        return [4 /*yield*/, prisma.student.createMany({ data: studentsData })];
                     case 1:
                         _a.sent();
                         fs_1.default.unlink(filepath, function (err) {
                             if (err)
-                                return next(new appError_1.default("File uploaded but failed to delete file", 500));
+                                throw new appError_1.default("File uploaded but failed to delete file", 500);
                         });
                         return [2 /*return*/];
                 }

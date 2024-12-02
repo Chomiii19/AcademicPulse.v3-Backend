@@ -40,11 +40,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteStudent = exports.updateStudent = exports.getStudent = exports.getAllStudents = void 0;
-// import StudentService from "../services/studentService";
+var studentService_1 = __importDefault(require("../services/studentService"));
 var catchAsync_1 = __importDefault(require("../utils/catchAsync"));
 var getAllStudents = (0, catchAsync_1.default)(function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        return [2 /*return*/];
+    var _a, students, totalStudents, totalPages;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0: return [4 /*yield*/, studentService_1.default.getAllStudents(req)];
+            case 1:
+                _a = _b.sent(), students = _a.students, totalStudents = _a.totalStudents, totalPages = _a.totalPages;
+                res.status(200).json({
+                    status: "Success",
+                    totalStudents: totalStudents,
+                    totalPages: totalPages,
+                    data: students,
+                });
+                return [2 /*return*/];
+        }
     });
 }); });
 exports.getAllStudents = getAllStudents;
