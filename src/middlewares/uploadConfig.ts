@@ -5,7 +5,8 @@ import AppError from "../errors/appError";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.resolve(process.cwd(), "dev-data/data/"));
+    cb(null, path.resolve(process.cwd(), "src/dev-data/data/"));
+    console.log(path.resolve(process.cwd(), "src/dev-data/data/"));
   },
 
   filename: function (req, file, cb) {

@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
 class importDeleteService {
   excelToJson(filepath: string, req: Request): IStudent[] {
     const workbook = xlsx.readFile(filepath);
-
+    console.log(req.user);
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
 
@@ -37,14 +37,19 @@ class importDeleteService {
   }
 
   async importAllData(req: Request, next: NextFunction) {
-    if (!req.file) return next(new AppError("No file uploaded.", 400));
+    if (!req.file) throw new AppError("No file uploaded.", 400);
 
     const filepath = req.file.path;
     const studentsData = this.excelToJson(filepath, req);
 
     if (!studentsData) throw new AppError("Invalid file entry", 400);
 
-    await prisma.student.createMany({ data: studentsData });
+    try {
+      await prisma.student.createMany({ data: studentsData });
+    } catch (error) {
+      const err = error as Error;
+      throw new AppError(err.message, 400);
+    }
 
     fs.unlink(filepath, (err) => {
       if (err)

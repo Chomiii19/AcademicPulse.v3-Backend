@@ -9,7 +9,8 @@ var path_1 = __importDefault(require("path"));
 var appError_1 = __importDefault(require("../errors/appError"));
 var storage = multer_1.default.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path_1.default.resolve(process.cwd(), "dev-data/data/"));
+        cb(null, path_1.default.resolve(process.cwd(), "src/dev-data/data/"));
+        console.log(path_1.default.resolve(process.cwd(), "src/dev-data/data/"));
     },
     filename: function (req, file, cb) {
         var uniqueSuffix = "".concat(Date.now(), "-").concat(Math.round(Math.random() * 1e9));

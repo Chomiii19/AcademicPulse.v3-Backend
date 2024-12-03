@@ -19,7 +19,7 @@ class AuthService {
     const cookieOptions = {
       maxAge: cookieExpiry * 24 * 60 * 60 * 1000,
       httpOnly: true,
-      secure: false,
+      secure: true,
       sameSite: "none" as "none",
       path: "/",
     };

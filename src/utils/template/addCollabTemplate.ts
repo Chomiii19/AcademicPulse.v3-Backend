@@ -158,7 +158,7 @@ const addCollab = (name: IUser["firstname"], token: string) => {
                       <table border="0" cellpadding="0" cellspacing="0">
                         <tr>
                           <td align="center" bgcolor="#1a82e2" style="border-radius: 6px;">
-                            <a href="${process.env.APP_ORIGIN}/${token}" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Accept Collaboration</a>
+                            <a href="https://acadpulse-backend.onrender.com/api/v1/app/accept-collab/token}" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Accept Collaboration</a>
                           </td>
                         </tr>
                       </table>

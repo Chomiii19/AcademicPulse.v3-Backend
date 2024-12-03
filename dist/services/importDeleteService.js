@@ -49,6 +49,7 @@ var importDeleteService = /** @class */ (function () {
     }
     importDeleteService.prototype.excelToJson = function (filepath, req) {
         var workbook = xlsx_1.default.readFile(filepath);
+        console.log(req.user);
         var sheetName = workbook.SheetNames[0];
         var worksheet = workbook.Sheets[sheetName];
         var rawData = xlsx_1.default.utils.sheet_to_json(worksheet);
@@ -72,19 +73,28 @@ var importDeleteService = /** @class */ (function () {
     };
     importDeleteService.prototype.importAllData = function (req, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var filepath, studentsData;
+            var filepath, studentsData, error_1, err;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         if (!req.file)
-                            return [2 /*return*/, next(new appError_1.default("No file uploaded.", 400))];
+                            throw new appError_1.default("No file uploaded.", 400);
                         filepath = req.file.path;
                         studentsData = this.excelToJson(filepath, req);
                         if (!studentsData)
                             throw new appError_1.default("Invalid file entry", 400);
-                        return [4 /*yield*/, prisma.student.createMany({ data: studentsData })];
+                        _a.label = 1;
                     case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, prisma.student.createMany({ data: studentsData })];
+                    case 2:
                         _a.sent();
+                        return [3 /*break*/, 4];
+                    case 3:
+                        error_1 = _a.sent();
+                        err = error_1;
+                        throw new appError_1.default(err.message, 400);
+                    case 4:
                         fs_1.default.unlink(filepath, function (err) {
                             if (err)
                                 throw new appError_1.default("File uploaded but failed to delete file", 500);

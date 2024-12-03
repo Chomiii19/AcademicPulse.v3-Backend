@@ -47,7 +47,7 @@ class AppService {
       },
       data: {
         role: 1,
-        schoolId: school.schoolId,
+        schoolId: decoded.schoolId,
       },
     });
 

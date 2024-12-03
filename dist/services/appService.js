@@ -88,7 +88,7 @@ var AppService = /** @class */ (function () {
                                 },
                                 data: {
                                     role: 1,
-                                    schoolId: school.schoolId,
+                                    schoolId: decoded.schoolId,
                                 },
                             })];
                     case 3:
