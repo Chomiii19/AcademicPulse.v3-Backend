@@ -57,12 +57,14 @@ var StudentService = /** @class */ (function () {
                                 skip: (page - 1) * 10,
                                 take: 10,
                                 select: {
-                                    id: false,
-                                    schoolId: false,
-                                    isValidated: false,
-                                    inSchool: false,
-                                    createdAt: false,
-                                    updatedAt: false,
+                                    studentId: true,
+                                    surname: true,
+                                    firstname: true,
+                                    middlename: true,
+                                    extension: true,
+                                    course: true,
+                                    yearLevel: true,
+                                    email: true,
                                 },
                             })];
                     case 1:
