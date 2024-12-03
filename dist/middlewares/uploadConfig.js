@@ -4,13 +4,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var multer_1 = __importDefault(require("multer"));
-// import { fileURLToPath } from "url";
+var fs_1 = __importDefault(require("fs"));
 var path_1 = __importDefault(require("path"));
 var appError_1 = __importDefault(require("../errors/appError"));
 var storage = multer_1.default.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path_1.default.resolve(process.cwd(), "dev-data/data/"));
-        console.log(path_1.default.resolve(process.cwd(), "dev-data/data/"));
+        var uploadPath = path_1.default.resolve(process.cwd(), "dev-data/data/");
+        if (!fs_1.default.existsSync(uploadPath)) {
+            fs_1.default.mkdirSync(uploadPath, { recursive: true });
+        }
+        cb(null, uploadPath);
+        console.log(uploadPath);
     },
     filename: function (req, file, cb) {
         var uniqueSuffix = "".concat(Date.now(), "-").concat(Math.round(Math.random() * 1e9));

@@ -4,6 +4,7 @@ import importDeleteService from "../services/importDeleteService";
 
 const importData = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    console.log("Hello");
     importDeleteService.importAllData(req, next);
 
     res.status(201).json({
