@@ -91,7 +91,7 @@ var verifyUserAccount = (0, catchAsync_1.default)(function (req, res, next) { re
             case 0: return [4 /*yield*/, authService_1.default.verifyUser(String(req.params.token))];
             case 1:
                 _a.sent();
-                res.redirect("".concat(process.env.APP_ORIGIN, "/app"));
+                res.redirect("".concat(process.env.APP_ORIGIN, "/register-school"));
                 return [2 /*return*/];
         }
     });

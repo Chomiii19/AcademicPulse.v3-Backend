@@ -49,7 +49,6 @@ var importDeleteService = /** @class */ (function () {
     }
     importDeleteService.prototype.excelToJson = function (filepath, req) {
         var workbook = xlsx_1.default.readFile(filepath);
-        console.log(req.user);
         var sheetName = workbook.SheetNames[0];
         var worksheet = workbook.Sheets[sheetName];
         var rawData = xlsx_1.default.utils.sheet_to_json(worksheet);

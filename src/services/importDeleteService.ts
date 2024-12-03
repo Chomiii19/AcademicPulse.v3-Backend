@@ -10,7 +10,6 @@ const prisma = new PrismaClient();
 class importDeleteService {
   excelToJson(filepath: string, req: Request): IStudent[] {
     const workbook = xlsx.readFile(filepath);
-    console.log(req.user);
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
 
