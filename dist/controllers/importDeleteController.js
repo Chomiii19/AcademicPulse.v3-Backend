@@ -44,7 +44,6 @@ var catchAsync_1 = __importDefault(require("../utils/catchAsync"));
 var importDeleteService_1 = __importDefault(require("../services/importDeleteService"));
 var importData = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        console.log("Hello");
         importDeleteService_1.default.importAllData(req, next);
         res.status(201).json({
             status: "Success",

@@ -8,9 +8,7 @@ const getAllStudents = catchAsync(async (req: Request, res: Response) => {
 
   res.status(200).json({
     status: "Success",
-    totalStudents,
-    totalPages,
-    data: students,
+    data: { totalStudents, totalPages, students },
   });
 });
 

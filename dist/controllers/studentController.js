@@ -51,9 +51,7 @@ var getAllStudents = (0, catchAsync_1.default)(function (req, res) { return __aw
                 _a = _b.sent(), students = _a.students, totalStudents = _a.totalStudents, totalPages = _a.totalPages;
                 res.status(200).json({
                     status: "Success",
-                    totalStudents: totalStudents,
-                    totalPages: totalPages,
-                    data: students,
+                    data: { totalStudents: totalStudents, totalPages: totalPages, students: students },
                 });
                 return [2 /*return*/];
         }

@@ -14,7 +14,6 @@ var storage = multer_1.default.diskStorage({
             fs_1.default.mkdirSync(uploadPath, { recursive: true });
         }
         cb(null, uploadPath);
-        console.log(uploadPath);
     },
     filename: function (req, file, cb) {
         var uniqueSuffix = "".concat(Date.now(), "-").concat(Math.round(Math.random() * 1e9));

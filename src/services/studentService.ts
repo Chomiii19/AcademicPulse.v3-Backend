@@ -12,6 +12,14 @@ class StudentService {
       where: { schoolId: req.user.schoolId },
       skip: (page - 1) * 10,
       take: 10,
+      select: {
+        id: false,
+        schoolId: false,
+        isValidated: false,
+        inSchool: false,
+        createdAt: false,
+        updatedAt: false,
+      },
     });
 
     if (!students) throw new AppError("No students found", 404);

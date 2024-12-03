@@ -56,6 +56,14 @@ var StudentService = /** @class */ (function () {
                                 where: { schoolId: req.user.schoolId },
                                 skip: (page - 1) * 10,
                                 take: 10,
+                                select: {
+                                    id: false,
+                                    schoolId: false,
+                                    isValidated: false,
+                                    inSchool: false,
+                                    createdAt: false,
+                                    updatedAt: false,
+                                },
                             })];
                     case 1:
                         students = _a.sent();
