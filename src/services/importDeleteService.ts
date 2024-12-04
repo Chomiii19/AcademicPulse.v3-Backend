@@ -19,7 +19,7 @@ class importDeleteService {
       const studentId = `${req.user.schoolId}-${new Date()
         .getFullYear()
         .toString()
-        .slice(-2)}-${i + 1}`;
+        .slice(-2)}-${(i + 1).toString().padStart(4, "0")}`;
 
       return {
         studentId,

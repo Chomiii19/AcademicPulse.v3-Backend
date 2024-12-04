@@ -56,7 +56,7 @@ var importDeleteService = /** @class */ (function () {
             var studentId = "".concat(req.user.schoolId, "-").concat(new Date()
                 .getFullYear()
                 .toString()
-                .slice(-2), "-").concat(i + 1);
+                .slice(-2), "-").concat((i + 1).toString().padStart(4, "0"));
             return {
                 studentId: studentId,
                 schoolId: req.user.schoolId,

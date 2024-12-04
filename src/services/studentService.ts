@@ -6,12 +6,13 @@ const prisma = new PrismaClient();
 
 class StudentService {
   async getAllStudents(req: Request) {
-    const page = Number(req.query.page);
+    const page = Number(req.query.page) || 1;
 
     const students = await prisma.student.findMany({
       where: { schoolId: req.user.schoolId },
       skip: (page - 1) * 10,
       take: 10,
+      orderBy: { id: "asc" },
       select: {
         studentId: true,
         surname: true,

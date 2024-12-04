@@ -51,11 +51,12 @@ var StudentService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        page = Number(req.query.page);
+                        page = Number(req.query.page) || 1;
                         return [4 /*yield*/, prisma.student.findMany({
                                 where: { schoolId: req.user.schoolId },
                                 skip: (page - 1) * 10,
                                 take: 10,
+                                orderBy: { id: "asc" },
                                 select: {
                                     studentId: true,
                                     surname: true,
