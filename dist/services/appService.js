@@ -40,6 +40,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var client_1 = require("@prisma/client");
+var jszip_1 = __importDefault(require("jszip"));
+var qrcode_1 = __importDefault(require("qrcode"));
 var appError_1 = __importDefault(require("../errors/appError"));
 var verifyToken_1 = __importDefault(require("../utils/verifyToken"));
 var signToken_1 = __importDefault(require("../utils/signToken"));
@@ -365,6 +367,47 @@ var AppService = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
             return [2 /*return*/];
         }); });
+    };
+    AppService.prototype.generateQrCode = function (req) {
+        return __awaiter(this, void 0, void 0, function () {
+            var students, zip, zipBuffer;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, prisma.student.findMany({
+                            where: { schoolId: req.user.schoolId },
+                            orderBy: { id: "asc" },
+                            select: { studentId: true },
+                        })];
+                    case 1:
+                        students = _a.sent();
+                        if (!students || students.length === 0)
+                            throw new appError_1.default("No students in this school", 404);
+                        zip = new jszip_1.default();
+                        return [4 /*yield*/, Promise.all(students.map(function (student) { return __awaiter(_this, void 0, void 0, function () {
+                                var qrCodeImage;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0: return [4 /*yield*/, qrcode_1.default.toBuffer(student.studentId)];
+                                        case 1:
+                                            qrCodeImage = _a.sent();
+                                            zip.file("".concat(student.studentId, ".png"), qrCodeImage);
+                                            return [2 /*return*/];
+                                    }
+                                });
+                            }); }))];
+                    case 2:
+                        _a.sent();
+                        return [4 /*yield*/, zip.generateAsync({
+                                type: "nodebuffer",
+                                compression: "DEFLATE",
+                            })];
+                    case 3:
+                        zipBuffer = _a.sent();
+                        return [2 /*return*/, zipBuffer];
+                }
+            });
+        });
     };
     return AppService;
 }());

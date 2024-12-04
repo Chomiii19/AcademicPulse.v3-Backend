@@ -43,7 +43,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.schoolLogGraphData = exports.studentLogExit = exports.studentLogEntrance = exports.getStudentLogs = exports.getAllStudentsInSchoolStatus = exports.getAllStudentsInSchool = exports.countStudentsInSchool = exports.validatedIdGraphData = exports.validatedIdCount = exports.enrolledCount = exports.getAllCollaborators = exports.setUserRole = exports.acceptCollab = exports.addCollaborators = exports.validateId = exports.verifySchool = exports.registerSchool = void 0;
+exports.generateQrCode = exports.schoolLogGraphData = exports.studentLogExit = exports.studentLogEntrance = exports.getStudentLogs = exports.getAllStudentsInSchoolStatus = exports.getAllStudentsInSchool = exports.countStudentsInSchool = exports.validatedIdGraphData = exports.validatedIdCount = exports.enrolledCount = exports.getAllCollaborators = exports.setUserRole = exports.acceptCollab = exports.addCollaborators = exports.validateId = exports.verifySchool = exports.registerSchool = void 0;
 var client_1 = require("@prisma/client");
 var catchAsync_1 = __importDefault(require("../utils/catchAsync"));
 var appService_1 = __importDefault(require("../services/appService"));
@@ -316,4 +316,19 @@ var schoolLogGraphData = (0, catchAsync_1.default)(function (req, res, next) { r
     return [2 /*return*/];
 }); }); });
 exports.schoolLogGraphData = schoolLogGraphData;
+var generateQrCode = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var zipBuffer;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, appService_1.default.generateQrCode(req)];
+            case 1:
+                zipBuffer = _a.sent();
+                res.setHeader("Content-Disposition", 'attachment; filename="student_qrcodes.zip"');
+                res.setHeader("Content-Type", "application/zip");
+                res.status(200).send(zipBuffer);
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.generateQrCode = generateQrCode;
 var templateObject_1;

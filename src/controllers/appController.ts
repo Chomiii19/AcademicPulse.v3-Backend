@@ -236,6 +236,19 @@ const schoolLogGraphData = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {}
 );
 
+const generateQrCode = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const zipBuffer = await AppService.generateQrCode(req);
+
+    res.setHeader(
+      "Content-Disposition",
+      'attachment; filename="student_qrcodes.zip"'
+    );
+    res.setHeader("Content-Type", "application/zip");
+    res.status(200).send(zipBuffer);
+  }
+);
+
 export {
   registerSchool,
   verifySchool,
@@ -254,4 +267,5 @@ export {
   studentLogEntrance,
   studentLogExit,
   schoolLogGraphData, //Linegraph
+  generateQrCode,
 };

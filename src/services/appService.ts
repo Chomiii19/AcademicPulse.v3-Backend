@@ -1,5 +1,7 @@
 import { Request } from "express";
 import { PrismaClient } from "@prisma/client";
+import JSZip from "jszip";
+import QRCode from "qrcode";
 import AppError from "../errors/appError";
 import verifyToken from "../utils/verifyToken";
 import IStudent from "../@types/studentInterface";
@@ -250,6 +252,33 @@ class AppService {
   }
 
   async getStudentLogs(req: Request) {}
+
+  async generateQrCode(req: Request): Promise<Buffer> {
+    const students = await prisma.student.findMany({
+      where: { schoolId: req.user.schoolId },
+      orderBy: { id: "asc" },
+      select: { studentId: true },
+    });
+
+    if (!students || students.length === 0)
+      throw new AppError("No students in this school", 404);
+
+    const zip = new JSZip();
+
+    await Promise.all(
+      students.map(async (student: { studentId: string }) => {
+        const qrCodeImage = await QRCode.toBuffer(student.studentId);
+        zip.file(`${student.studentId}.png`, qrCodeImage);
+      })
+    );
+
+    const zipBuffer = await zip.generateAsync({
+      type: "nodebuffer",
+      compression: "DEFLATE",
+    });
+
+    return zipBuffer;
+  }
 }
 
 export default new AppService();

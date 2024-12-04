@@ -46,6 +46,7 @@ router
 router.route("/student-log/exit/submit").post(appController.studentLogExit);
 
 router.route("/get-students").get(studentController.getAllStudents);
+router.route("/generate-qrcode").get(appController.generateQrCode);
 router.route("/get-student").get(studentController.getStudent);
 router.route("/update-tudents").get(studentController.updateStudent);
 router.route("/delete-tudents").get(studentController.deleteStudent);
