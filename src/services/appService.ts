@@ -66,14 +66,18 @@ class AppService {
     const decoded = verifyToken(studentId);
 
     const student = await prisma.student.findFirst({
-      where: { studentId: decoded.studentId, schoolId: req.user.schoolId },
+      where: {
+        schoolId: req.user.schoolId,
+        id: decoded.id,
+        studentId: decoded.studentId,
+      },
     });
 
     if (!student)
       throw new AppError("Student is not enrolled in this school", 401);
 
     await prisma.student.update({
-      where: { studentId: student.studentId },
+      where: { id: student.id, studentId: student.studentId },
       data: { isValidated: true },
     });
 
@@ -257,7 +261,7 @@ class AppService {
     const students = await prisma.student.findMany({
       where: { schoolId: req.user.schoolId },
       orderBy: { id: "asc" },
-      select: { studentId: true },
+      select: { id: true, studentId: true },
     });
 
     if (!students || students.length === 0)
@@ -266,8 +270,13 @@ class AppService {
     const zip = new JSZip();
 
     await Promise.all(
-      students.map(async (student: { studentId: string }) => {
-        const qrCodeImage = await QRCode.toBuffer(student.studentId);
+      students.map(async (student: { id: number; studentId: string }) => {
+        const token = signToken(
+          { id: student.id, studentId: student.studentId },
+          process.env.JWT_ID_EXPIRES_IN as string
+        );
+
+        const qrCodeImage = await QRCode.toBuffer(token);
         zip.file(`${student.studentId}.png`, qrCodeImage);
       })
     );

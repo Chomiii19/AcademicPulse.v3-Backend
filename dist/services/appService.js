@@ -113,14 +113,18 @@ var AppService = /** @class */ (function () {
                             throw new appError_1.default("QR code value is empty", 400);
                         decoded = (0, verifyToken_1.default)(studentId);
                         return [4 /*yield*/, prisma.student.findFirst({
-                                where: { studentId: decoded.studentId, schoolId: req.user.schoolId },
+                                where: {
+                                    schoolId: req.user.schoolId,
+                                    id: decoded.id,
+                                    studentId: decoded.studentId,
+                                },
                             })];
                     case 1:
                         student = _a.sent();
                         if (!student)
                             throw new appError_1.default("Student is not enrolled in this school", 401);
                         return [4 /*yield*/, prisma.student.update({
-                                where: { studentId: student.studentId },
+                                where: { id: student.id, studentId: student.studentId },
                                 data: { isValidated: true },
                             })];
                     case 2:
@@ -377,7 +381,7 @@ var AppService = /** @class */ (function () {
                     case 0: return [4 /*yield*/, prisma.student.findMany({
                             where: { schoolId: req.user.schoolId },
                             orderBy: { id: "asc" },
-                            select: { studentId: true },
+                            select: { id: true, studentId: true },
                         })];
                     case 1:
                         students = _a.sent();
@@ -385,10 +389,12 @@ var AppService = /** @class */ (function () {
                             throw new appError_1.default("No students in this school", 404);
                         zip = new jszip_1.default();
                         return [4 /*yield*/, Promise.all(students.map(function (student) { return __awaiter(_this, void 0, void 0, function () {
-                                var qrCodeImage;
+                                var token, qrCodeImage;
                                 return __generator(this, function (_a) {
                                     switch (_a.label) {
-                                        case 0: return [4 /*yield*/, qrcode_1.default.toBuffer(student.studentId)];
+                                        case 0:
+                                            token = (0, signToken_1.default)({ id: student.id, studentId: student.studentId }, process.env.JWT_ID_EXPIRES_IN);
+                                            return [4 /*yield*/, qrcode_1.default.toBuffer(token)];
                                         case 1:
                                             qrCodeImage = _a.sent();
                                             zip.file("".concat(student.studentId, ".png"), qrCodeImage);
