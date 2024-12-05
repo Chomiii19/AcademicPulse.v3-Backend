@@ -10,6 +10,7 @@ import protect from "./middlewares/protect";
 
 const app = express();
 
+app.set("trust proxy", true);
 app.use(
   cors({
     origin: [`${process.env.APP_ORIGIN}`],
