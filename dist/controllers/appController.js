@@ -180,6 +180,7 @@ var studentLogEntrance = (0, catchAsync_1.default)(function (req, res, next) { r
         switch (_a.label) {
             case 0:
                 studentId = req.body;
+                console.log(studentId);
                 if (!studentId)
                     return [2 /*return*/, next(new appError_1.default("QR code value is empty", 400))];
                 return [4 /*yield*/, appService_1.default.studentLogEntrance(studentId, req)];

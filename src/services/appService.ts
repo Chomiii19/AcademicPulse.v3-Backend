@@ -277,7 +277,7 @@ class AppService {
           process.env.JWT_ID_EXPIRES_IN as string
         );
 
-        const qrCodeImage = await QRCode.toBuffer(token);
+        const qrCodeImage = await QRCode.toBuffer(token, { width: 300 });
         zip.file(`${student.studentId}.png`, qrCodeImage);
       })
     );

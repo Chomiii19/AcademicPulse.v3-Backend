@@ -358,7 +358,7 @@ var AppService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, prisma.student.findMany({
                             where: { schoolId: req.user.schoolId },
-                            orderBy: { inSchool: "asc" },
+                            orderBy: { inSchool: "desc" },
                             select: { surname: true, firstname: true, course: true, inSchool: true },
                         })];
                     case 1:
@@ -395,7 +395,7 @@ var AppService = /** @class */ (function () {
                                     switch (_a.label) {
                                         case 0:
                                             token = (0, signToken_1.default)({ id: student.id, studentId: student.studentId }, process.env.JWT_ID_EXPIRES_IN);
-                                            return [4 /*yield*/, qrcode_1.default.toBuffer(token)];
+                                            return [4 /*yield*/, qrcode_1.default.toBuffer(token, { width: 300 })];
                                         case 1:
                                             qrCodeImage = _a.sent();
                                             zip.file("".concat(student.studentId, ".png"), qrCodeImage);

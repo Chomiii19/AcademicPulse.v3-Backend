@@ -40,11 +40,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+var appError_1 = __importDefault(require("../errors/appError"));
 //@ts-expect-error
 var verifyToken = function (token) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, jsonwebtoken_1.default.verify(token, process.env.SECRET_KEY)];
+            case 0:
+                if (typeof token !== "string")
+                    throw new appError_1.default("Invalid token format", 400);
+                return [4 /*yield*/, jsonwebtoken_1.default.verify(token, process.env.SECRET_KEY)];
             case 1: return [2 /*return*/, _a.sent()];
         }
     });
