@@ -7,10 +7,15 @@ var dotenv_1 = __importDefault(require("dotenv"));
 var http_1 = __importDefault(require("http"));
 var socket_io_1 = require("socket.io");
 var app_1 = __importDefault(require("./app"));
-var server = http_1.default.createServer(app_1.default);
-var io = new socket_io_1.Server(server);
 dotenv_1.default.config();
 var PORT = process.env.PORT;
+var server = http_1.default.createServer(app_1.default);
+var io = new socket_io_1.Server(server, {
+    cors: {
+        origin: process.env.APP_ORIGIN,
+        credentials: true,
+    },
+});
 app_1.default.use(function (req, res, next) {
     req.io = io;
     next();

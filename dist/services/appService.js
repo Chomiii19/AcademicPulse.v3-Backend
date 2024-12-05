@@ -358,6 +358,7 @@ var AppService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, prisma.student.findMany({
                             where: { schoolId: req.user.schoolId },
+                            orderBy: { inSchool: "asc" },
                             select: { surname: true, firstname: true, course: true, inSchool: true },
                         })];
                     case 1:

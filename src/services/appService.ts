@@ -249,6 +249,7 @@ class AppService {
   > {
     const students = await prisma.student.findMany({
       where: { schoolId: req.user.schoolId },
+      orderBy: { inSchool: "asc" },
       select: { surname: true, firstname: true, course: true, inSchool: true },
     });
 

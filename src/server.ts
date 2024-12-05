@@ -3,16 +3,16 @@ import http from "http";
 import { Server } from "socket.io";
 import app from "./app";
 
+dotenv.config();
+const PORT = process.env.PORT;
 const server = http.createServer(app);
+
 const io = new Server(server, {
   cors: {
     origin: process.env.APP_ORIGIN,
     credentials: true,
   },
 });
-
-dotenv.config();
-const PORT = process.env.PORT;
 
 app.use((req, res, next) => {
   (req as any).io = io;
