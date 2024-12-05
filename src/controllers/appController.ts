@@ -125,6 +125,7 @@ const getAllCollaborators = catchAsync(
 const studentLogEntrance = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const studentId = req.body;
+    console.log(studentId);
 
     if (!studentId) return next(new AppError("QR code value is empty", 400));
 
