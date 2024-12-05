@@ -111,7 +111,9 @@ var AppService = /** @class */ (function () {
                         studentId = req.body.studentId;
                         if (!studentId)
                             throw new appError_1.default("QR code value is empty", 400);
-                        decoded = (0, verifyToken_1.default)(studentId);
+                        return [4 /*yield*/, (0, verifyToken_1.default)(studentId)];
+                    case 1:
+                        decoded = _a.sent();
                         return [4 /*yield*/, prisma.student.findFirst({
                                 where: {
                                     schoolId: req.user.schoolId,
@@ -119,7 +121,7 @@ var AppService = /** @class */ (function () {
                                     studentId: decoded.studentId,
                                 },
                             })];
-                    case 1:
+                    case 2:
                         student = _a.sent();
                         if (!student)
                             throw new appError_1.default("Student is not enrolled in this school", 401);
@@ -127,7 +129,7 @@ var AppService = /** @class */ (function () {
                                 where: { id: student.id, studentId: student.studentId },
                                 data: { isValidated: true },
                             })];
-                    case 2:
+                    case 3:
                         _a.sent();
                         return [2 /*return*/, student];
                 }
@@ -228,12 +230,13 @@ var AppService = /** @class */ (function () {
             var decoded, student;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        decoded = (0, verifyToken_1.default)(studentId);
+                    case 0: return [4 /*yield*/, (0, verifyToken_1.default)(studentId)];
+                    case 1:
+                        decoded = _a.sent();
                         return [4 /*yield*/, prisma.student.findFirst({
                                 where: { id: decoded.id, schoolId: req.user.schoolId },
                             })];
-                    case 1:
+                    case 2:
                         student = _a.sent();
                         if (!student)
                             throw new appError_1.default("Student is not enrolled in this school", 401);
@@ -245,12 +248,12 @@ var AppService = /** @class */ (function () {
                                 where: { studentId: studentId },
                                 data: { inSchool: true },
                             })];
-                    case 2:
+                    case 3:
                         _a.sent();
                         return [4 /*yield*/, prisma.schoolLog.create({
                                 data: { schoolId: student.schoolId, studentId: studentId, type: "entry" },
                             })];
-                    case 3:
+                    case 4:
                         _a.sent();
                         return [2 /*return*/];
                 }
@@ -262,12 +265,13 @@ var AppService = /** @class */ (function () {
             var decoded, student;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        decoded = (0, verifyToken_1.default)(studentId);
+                    case 0: return [4 /*yield*/, (0, verifyToken_1.default)(studentId)];
+                    case 1:
+                        decoded = _a.sent();
                         return [4 /*yield*/, prisma.student.findFirst({
                                 where: { id: decoded.id, schoolId: req.user.schoolId },
                             })];
-                    case 1:
+                    case 2:
                         student = _a.sent();
                         if (!student)
                             throw new appError_1.default("Student is not enrolled in this school", 401);
@@ -279,12 +283,12 @@ var AppService = /** @class */ (function () {
                                 where: { studentId: studentId },
                                 data: { inSchool: false },
                             })];
-                    case 2:
+                    case 3:
                         _a.sent();
                         return [4 /*yield*/, prisma.schoolLog.create({
                                 data: { schoolId: student.schoolId, studentId: studentId, type: "exit" },
                             })];
-                    case 3:
+                    case 4:
                         _a.sent();
                         return [2 /*return*/];
                 }

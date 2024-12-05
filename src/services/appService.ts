@@ -63,7 +63,7 @@ class AppService {
 
     if (!studentId) throw new AppError("QR code value is empty", 400);
 
-    const decoded = verifyToken(studentId);
+    const decoded = await verifyToken(studentId);
 
     const student = await prisma.student.findFirst({
       where: {
@@ -156,7 +156,7 @@ class AppService {
   }
 
   async studentLogEntrance(studentId: string, req: Request): Promise<void> {
-    const decoded = verifyToken(studentId);
+    const decoded = await verifyToken(studentId);
 
     const student = await prisma.student.findFirst({
       where: { id: decoded.id, schoolId: req.user.schoolId },
@@ -182,7 +182,7 @@ class AppService {
   }
 
   async studentLogExit(studentId: string, req: Request): Promise<void> {
-    const decoded = verifyToken(studentId);
+    const decoded = await verifyToken(studentId);
 
     const student = await prisma.student.findFirst({
       where: { id: decoded.id, schoolId: req.user.schoolId },
