@@ -13,7 +13,7 @@ var userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 var appRoutes_1 = __importDefault(require("./routes/appRoutes"));
 var protect_1 = __importDefault(require("./middlewares/protect"));
 var app = (0, express_1.default)();
-app.set("trust proxy", true);
+app.set("trust proxy", 1);
 app.use((0, cors_1.default)({
     origin: ["".concat(process.env.APP_ORIGIN)],
     credentials: true,
