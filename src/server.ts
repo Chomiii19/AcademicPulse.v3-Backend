@@ -4,7 +4,12 @@ import { Server } from "socket.io";
 import app from "./app";
 
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: process.env.APP_ORIGIN,
+    credentials: true,
+  },
+});
 
 dotenv.config();
 const PORT = process.env.PORT;
