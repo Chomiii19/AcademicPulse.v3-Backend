@@ -175,7 +175,7 @@ var getAllCollaborators = (0, catchAsync_1.default)(function (req, res, next) { 
 }); });
 exports.getAllCollaborators = getAllCollaborators;
 var studentLogEntrance = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var studentId;
+    var studentId, count, io;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -185,6 +185,11 @@ var studentLogEntrance = (0, catchAsync_1.default)(function (req, res, next) { r
                 return [4 /*yield*/, appService_1.default.studentLogEntrance(studentId, req)];
             case 1:
                 _a.sent();
+                return [4 /*yield*/, appService_1.default.countStudentsInSchool(req)];
+            case 2:
+                count = _a.sent();
+                io = req.io;
+                io.emit("student-count-updated", { count: count });
                 res.status(200).json({
                     status: "Success",
                     message: "Successfully validated",
@@ -195,7 +200,7 @@ var studentLogEntrance = (0, catchAsync_1.default)(function (req, res, next) { r
 }); });
 exports.studentLogEntrance = studentLogEntrance;
 var studentLogExit = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var studentId;
+    var studentId, count, io;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -205,6 +210,11 @@ var studentLogExit = (0, catchAsync_1.default)(function (req, res, next) { retur
                 return [4 /*yield*/, appService_1.default.studentLogExit(studentId, req)];
             case 1:
                 _a.sent();
+                return [4 /*yield*/, appService_1.default.countStudentsInSchool(req)];
+            case 2:
+                count = _a.sent();
+                io = req.io;
+                io.emit("student-count-updated", { count: count });
                 res.status(200).json({
                     status: "Success",
                     message: "Successfully validated",

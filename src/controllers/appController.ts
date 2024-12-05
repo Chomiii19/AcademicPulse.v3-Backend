@@ -130,6 +130,11 @@ const studentLogEntrance = catchAsync(
 
     await AppService.studentLogEntrance(studentId, req);
 
+    const count = await AppService.countStudentsInSchool(req);
+
+    const io = (req as any).io;
+    io.emit("student-count-updated", { count });
+
     res.status(200).json({
       status: "Success",
       message: `Successfully validated`,
@@ -144,6 +149,11 @@ const studentLogExit = catchAsync(
     if (!studentId) return next(new AppError("QR code value is empty", 400));
 
     await AppService.studentLogExit(studentId, req);
+
+    const count = await AppService.countStudentsInSchool(req);
+
+    const io = (req as any).io;
+    io.emit("student-count-updated", { count });
 
     res.status(200).json({
       status: "Success",
