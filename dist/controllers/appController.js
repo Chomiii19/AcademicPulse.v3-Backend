@@ -192,7 +192,7 @@ var studentLogEntrance = (0, catchAsync_1.default)(function (req, res, next) { r
                 io.emit("student-count-updated", { count: count });
                 res.status(200).json({
                     status: "Success",
-                    message: "Successfully validated",
+                    message: "Successfully scanned",
                 });
                 return [2 /*return*/];
         }
@@ -217,7 +217,7 @@ var studentLogExit = (0, catchAsync_1.default)(function (req, res, next) { retur
                 io.emit("student-count-updated", { count: count });
                 res.status(200).json({
                     status: "Success",
-                    message: "Successfully validated",
+                    message: "Successfully scanned",
                 });
                 return [2 /*return*/];
         }

@@ -137,7 +137,7 @@ const studentLogEntrance = catchAsync(
 
     res.status(200).json({
       status: "Success",
-      message: `Successfully validated`,
+      message: `Successfully scanned`,
     });
   }
 );
@@ -157,7 +157,7 @@ const studentLogExit = catchAsync(
 
     res.status(200).json({
       status: "Success",
-      message: `Successfully validated`,
+      message: `Successfully scanned`,
     });
   }
 );

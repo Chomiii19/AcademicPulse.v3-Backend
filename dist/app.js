@@ -16,7 +16,7 @@ var server_1 = __importDefault(require("./server"));
 var app = (0, express_1.default)();
 app.set("trust proxy", 1);
 app.use((0, cors_1.default)({
-    origin: ["".concat(process.env.APP_ORIGIN)],
+    origin: ["".concat(process.env.APP_ORIGIN), "https://acadpulse-vite.vercel.app"],
     credentials: true,
 }));
 app.use(express_1.default.json());
