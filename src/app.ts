@@ -14,7 +14,7 @@ const app = express();
 app.set("trust proxy", 1);
 app.use(
   cors({
-    origin: [`${process.env.APP_ORIGIN}`, "https://acadpulse-vite.vercel.app"],
+    origin: [`${process.env.APP_ORIGIN}`],
     credentials: true,
   })
 );

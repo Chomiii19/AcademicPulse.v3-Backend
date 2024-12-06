@@ -10,7 +10,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: [`${process.env.APP_ORIGIN}`, "https://acadpulse-vite.vercel.app"],
+    origin: [`${process.env.APP_ORIGIN}`],
     credentials: true,
   },
 });
