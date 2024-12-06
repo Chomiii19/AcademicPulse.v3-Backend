@@ -7,6 +7,7 @@ import authRoute from "./routes/authRoutes";
 import userRoute from "./routes/userRoutes";
 import appRoute from "./routes/appRoutes";
 import protect from "./middlewares/protect";
+import io from "./server";
 
 const app = express();
 
@@ -20,6 +21,10 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
+app.use("/", (req: Request, res, next) => {
+  req.io = io;
+  next();
+});
 app.use("/api/v1", authRoute);
 app.get("/api/v1/refresh", (req, res) => {
   console.log("hello:", req.cookies);

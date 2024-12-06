@@ -132,7 +132,7 @@ const studentLogEntrance = catchAsync(
 
     const count = await AppService.countStudentsInSchool(req);
 
-    const io = (req as any).io;
+    const io = req.io;
     io.emit("student-count-updated", { count });
 
     res.status(200).json({
@@ -152,7 +152,7 @@ const studentLogExit = catchAsync(
 
     const count = await AppService.countStudentsInSchool(req);
 
-    const io = (req as any).io;
+    const io = req.io;
     io.emit("student-count-updated", { count });
 
     res.status(200).json({

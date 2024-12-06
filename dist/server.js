@@ -16,10 +16,6 @@ var io = new socket_io_1.Server(server, {
         credentials: true,
     },
 });
-app_1.default.use(function (req, res, next) {
-    req.io = io;
-    next();
-});
 io.on("connection", function (socket) {
     console.log("Client is connected to backend", socket.id);
     socket.on("disconnect", function () {
@@ -27,3 +23,4 @@ io.on("connection", function (socket) {
     });
 });
 server.listen(PORT, function () { return console.log("Server is listening on port ", PORT); });
+exports.default = io;

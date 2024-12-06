@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import http from "http";
 import { Server } from "socket.io";
 import app from "./app";
+import { Request } from "express";
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -14,11 +15,6 @@ const io = new Server(server, {
   },
 });
 
-app.use((req, res, next) => {
-  (req as any).io = io;
-  next();
-});
-
 io.on("connection", (socket) => {
   console.log("Client is connected to backend", socket.id);
 
@@ -28,3 +24,5 @@ io.on("connection", (socket) => {
 });
 
 server.listen(PORT, () => console.log("Server is listening on port ", PORT));
+
+export default io;
