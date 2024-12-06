@@ -52,7 +52,7 @@ var protect = (0, catchAsync_1.default)(function (req, res, next) { return __awa
                 token = req.cookies.authToken;
                 if (!token) {
                     if (process.env.NODE_ENV === "production")
-                        return [2 /*return*/, res.redirect("/")];
+                        return [2 /*return*/, res.redirect(process.env.APP_ORIGIN)];
                     else
                         return [2 /*return*/, next(new appError_1.default("Invalid token!", 401))];
                 }

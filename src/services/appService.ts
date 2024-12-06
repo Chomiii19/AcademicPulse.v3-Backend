@@ -59,7 +59,7 @@ class AppService {
   }
 
   async validateId(req: Request): Promise<IStudent> {
-    const { studentId } = req.body;
+    const studentId = req.body.studentId;
 
     if (!studentId) throw new AppError("QR code value is empty", 400);
 

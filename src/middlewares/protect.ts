@@ -11,7 +11,8 @@ const protect = catchAsync(
     const token = req.cookies.authToken;
 
     if (!token) {
-      if (process.env.NODE_ENV === "production") return res.redirect("/");
+      if (process.env.NODE_ENV === "production")
+        return res.redirect(process.env.APP_ORIGIN as string);
       else return next(new AppError("Invalid token!", 401));
     }
 

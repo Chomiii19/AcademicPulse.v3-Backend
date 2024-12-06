@@ -40,19 +40,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-var appError_1 = __importDefault(require("../errors/appError"));
 var verifyToken = function (token) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        if (typeof token !== "string") {
-            throw new appError_1.default("Invalid token format", 400);
-        }
-        try {
-            return [2 /*return*/, jsonwebtoken_1.default.verify(token, process.env.SECRET_KEY)];
-        }
-        catch (error) {
-            throw new appError_1.default("Invalid or expired token", 401);
-        }
-        return [2 /*return*/];
+        return [2 /*return*/, jsonwebtoken_1.default.verify(token, process.env.SECRET_KEY)];
     });
 }); };
 exports.default = verifyToken;

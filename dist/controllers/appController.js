@@ -179,8 +179,7 @@ var studentLogEntrance = (0, catchAsync_1.default)(function (req, res, next) { r
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                studentId = req.body;
-                console.log(studentId);
+                studentId = req.body.studentId;
                 if (!studentId)
                     return [2 /*return*/, next(new appError_1.default("QR code value is empty", 400))];
                 return [4 /*yield*/, appService_1.default.studentLogEntrance(studentId, req)];
@@ -205,7 +204,7 @@ var studentLogExit = (0, catchAsync_1.default)(function (req, res, next) { retur
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                studentId = req.body;
+                studentId = req.body.studentId;
                 if (!studentId)
                     return [2 /*return*/, next(new appError_1.default("QR code value is empty", 400))];
                 return [4 /*yield*/, appService_1.default.studentLogExit(studentId, req)];
