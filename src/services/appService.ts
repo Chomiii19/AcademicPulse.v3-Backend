@@ -202,12 +202,16 @@ class AppService {
       throw new AppError("Student was not validated at entrance", 401);
 
     await prisma.student.update({
-      where: { studentId },
+      where: { studentId: student.studentId },
       data: { inSchool: false },
     });
 
     await prisma.schoolLog.create({
-      data: { schoolId: student.schoolId, studentId, type: "exit" },
+      data: {
+        schoolId: student.schoolId,
+        studentId: student.studentId,
+        type: "exit",
+      },
     });
   }
 

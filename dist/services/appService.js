@@ -284,13 +284,17 @@ var AppService = /** @class */ (function () {
                         if (!student.inSchool)
                             throw new appError_1.default("Student was not validated at entrance", 401);
                         return [4 /*yield*/, prisma.student.update({
-                                where: { studentId: studentId },
+                                where: { studentId: student.studentId },
                                 data: { inSchool: false },
                             })];
                     case 3:
                         _a.sent();
                         return [4 /*yield*/, prisma.schoolLog.create({
-                                data: { schoolId: student.schoolId, studentId: studentId, type: "exit" },
+                                data: {
+                                    schoolId: student.schoolId,
+                                    studentId: student.studentId,
+                                    type: "exit",
+                                },
                             })];
                     case 4:
                         _a.sent();
