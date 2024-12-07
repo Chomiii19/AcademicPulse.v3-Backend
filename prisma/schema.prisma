@@ -84,6 +84,7 @@ model SchoolLog {
   schoolId String
   timestamp DateTime @default(now())
   type Type
+
   student Student @relation(fields: [studentId], references: [studentId])
   school School @relation(fields: [schoolId], references: [schoolId], onDelete: Cascade)
 
