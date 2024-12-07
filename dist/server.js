@@ -12,7 +12,7 @@ var PORT = process.env.PORT;
 var server = http_1.default.createServer(app_1.default);
 var io = new socket_io_1.Server(server, {
     cors: {
-        origin: ["".concat(process.env.APP_ORIGIN), "https://acadpulse-vite.vercel.app"],
+        origin: ["".concat(process.env.APP_ORIGIN)],
         credentials: true,
     },
 });
