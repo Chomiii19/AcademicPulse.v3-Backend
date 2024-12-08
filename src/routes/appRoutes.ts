@@ -11,7 +11,7 @@ import uploadPhoto from "../middlewares/uploadPhoto";
 const router = express.Router();
 
 router.route("/protected-page").get(protectedPage);
-router.route("/pictures").get(protectedPage);
+router.route("/pictures").get(appController.getProfilePicture);
 
 router
   .route("/upload-photo/submit")

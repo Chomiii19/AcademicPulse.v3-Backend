@@ -27,7 +27,6 @@ const protect = catchAsync(
         new AppError("The user belonging with this token doesn't exist", 401)
       );
 
-    console.log(currentUser);
     req.user = currentUser;
     next();
   }
