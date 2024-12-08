@@ -57,6 +57,7 @@ var AppService = /** @class */ (function () {
                     case 0:
                         if (!((_a = req.file) === null || _a === void 0 ? void 0 : _a.path))
                             throw new appError_1.default("No profile picture provided", 400);
+                        console.log(req.file.path);
                         return [4 /*yield*/, prisma.profilePictures.create({
                                 data: {
                                     userId: req.user.id,
