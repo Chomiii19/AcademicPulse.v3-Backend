@@ -114,6 +114,7 @@ var AuthService = /** @class */ (function () {
                         if (!user || !(0, bcryptjs_1.compareSync)(password, user.password))
                             throw new appError_1.default("Incorrect email or password", 400);
                         currentUser = {
+                            id: user.id,
                             role: user.role,
                             firstname: user.firstname,
                             isVerified: user.isVerified,

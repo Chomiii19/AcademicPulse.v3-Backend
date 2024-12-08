@@ -77,6 +77,7 @@ class AuthService {
       throw new AppError("Incorrect email or password", 400);
 
     const currentUser = {
+      id: user.id,
       role: user.role,
       firstname: user.firstname,
       isVerified: user.isVerified,

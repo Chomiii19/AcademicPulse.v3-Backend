@@ -59,6 +59,7 @@ var protect = (0, catchAsync_1.default)(function (req, res, next) { return __awa
                 return [4 /*yield*/, (0, verifyToken_1.default)(token)];
             case 1:
                 decoded = _a.sent();
+                console.log(decoded);
                 return [4 /*yield*/, prisma.user.findFirst({
                         where: { email: decoded.email },
                     })];
@@ -66,6 +67,7 @@ var protect = (0, catchAsync_1.default)(function (req, res, next) { return __awa
                 currentUser = _a.sent();
                 if (!currentUser)
                     return [2 /*return*/, next(new appError_1.default("The user belonging with this token doesn't exist", 401))];
+                console.log(currentUser);
                 req.user = currentUser;
                 next();
                 return [2 /*return*/];

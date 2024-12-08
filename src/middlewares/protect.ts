@@ -17,7 +17,7 @@ const protect = catchAsync(
     }
 
     const decoded = await verifyToken(token);
-
+    console.log(decoded);
     const currentUser = await prisma.user.findFirst({
       where: { email: decoded.email },
     });
@@ -27,6 +27,7 @@ const protect = catchAsync(
         new AppError("The user belonging with this token doesn't exist", 401)
       );
 
+    console.log(currentUser);
     req.user = currentUser;
     next();
   }

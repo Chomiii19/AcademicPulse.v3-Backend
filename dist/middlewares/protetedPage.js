@@ -42,11 +42,9 @@ var protectedPage = function (req, res, next) { return __awaiter(void 0, void 0,
     var school, schoolId, user;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0:
-                console.log(req.user);
-                return [4 /*yield*/, prisma.school.findFirst({
-                        where: { schoolId: req.user.schoolId },
-                    })];
+            case 0: return [4 /*yield*/, prisma.school.findFirst({
+                    where: { schoolId: req.user.schoolId },
+                })];
             case 1:
                 school = _a.sent();
                 schoolId = school ? school.schoolId : null;
