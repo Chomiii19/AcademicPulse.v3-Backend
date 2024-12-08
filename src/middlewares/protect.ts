@@ -17,9 +17,9 @@ const protect = catchAsync(
     }
 
     const decoded = await verifyToken(token);
-    console.log(decoded);
+
     const currentUser = await prisma.user.findFirst({
-      where: { email: decoded.email },
+      where: { id: decoded.id, email: decoded.email },
     });
 
     if (!currentUser)

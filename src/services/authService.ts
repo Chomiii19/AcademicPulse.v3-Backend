@@ -51,6 +51,15 @@ class AuthService {
       },
     });
 
+    const newUser = {
+      id: user.id,
+      role: user.role,
+      email: user.email,
+      firstname: user.firstname,
+      isVerified: user.isVerified,
+      schoolId: user.schoolId,
+    };
+
     return user;
   }
 
@@ -66,7 +75,9 @@ class AuthService {
     email: string,
     password: string
   ): Promise<{
+    id: number;
     role: number;
+    email: string;
     firstname: string;
     isVerified: boolean;
     schoolId: string | null;
@@ -79,6 +90,7 @@ class AuthService {
     const currentUser = {
       id: user.id,
       role: user.role,
+      email: user.email,
       firstname: user.firstname,
       isVerified: user.isVerified,
       schoolId: user.schoolId,

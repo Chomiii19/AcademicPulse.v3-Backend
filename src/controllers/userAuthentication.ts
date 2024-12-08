@@ -19,7 +19,17 @@ const signup = catchAsync(
     );
 
     sendMail("User Verification (AcadPulse)", user, "verifyAccount", token);
-    AuthService.createSendToken(user, 201, res);
+
+    const newUser = {
+      id: user.id,
+      role: user.role,
+      email: user.email,
+      firstname: user.firstname,
+      isVerified: user.isVerified,
+      schoolId: user.schoolId,
+    } as IUser;
+
+    AuthService.createSendToken(newUser, 201, res);
   }
 );
 

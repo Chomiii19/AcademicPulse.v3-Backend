@@ -59,9 +59,8 @@ var protect = (0, catchAsync_1.default)(function (req, res, next) { return __awa
                 return [4 /*yield*/, (0, verifyToken_1.default)(token)];
             case 1:
                 decoded = _a.sent();
-                console.log(decoded);
                 return [4 /*yield*/, prisma.user.findFirst({
-                        where: { email: decoded.email },
+                        where: { id: decoded.id, email: decoded.email },
                     })];
             case 2:
                 currentUser = _a.sent();

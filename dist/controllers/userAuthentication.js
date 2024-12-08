@@ -46,7 +46,7 @@ var authService_1 = __importDefault(require("../services/authService"));
 var sendEmail_1 = __importDefault(require("../utils/sendEmail"));
 var signToken_1 = __importDefault(require("../utils/signToken"));
 var signup = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, token;
+    var user, token, newUser;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -60,7 +60,15 @@ var signup = (0, catchAsync_1.default)(function (req, res, next) { return __awai
                 user = _a.sent();
                 token = (0, signToken_1.default)({ email: user.email, id: user.id }, process.env.JWT_VERIFY_ACC_EXPIRES_IN);
                 (0, sendEmail_1.default)("User Verification (AcadPulse)", user, "verifyAccount", token);
-                authService_1.default.createSendToken(user, 201, res);
+                newUser = {
+                    id: user.id,
+                    role: user.role,
+                    email: user.email,
+                    firstname: user.firstname,
+                    isVerified: user.isVerified,
+                    schoolId: user.schoolId,
+                };
+                authService_1.default.createSendToken(newUser, 201, res);
                 return [2 /*return*/];
         }
     });

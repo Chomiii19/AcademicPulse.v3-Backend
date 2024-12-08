@@ -63,7 +63,7 @@ var AuthService = /** @class */ (function () {
     }
     AuthService.prototype.createUser = function (req) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, surname, firstname, middlename, extension, email, phoneNumber, password, user;
+            var _a, surname, firstname, middlename, extension, email, phoneNumber, password, user, newUser;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -81,6 +81,14 @@ var AuthService = /** @class */ (function () {
                             })];
                     case 1:
                         user = _b.sent();
+                        newUser = {
+                            id: user.id,
+                            role: user.role,
+                            email: user.email,
+                            firstname: user.firstname,
+                            isVerified: user.isVerified,
+                            schoolId: user.schoolId,
+                        };
                         return [2 /*return*/, user];
                 }
             });
@@ -116,6 +124,7 @@ var AuthService = /** @class */ (function () {
                         currentUser = {
                             id: user.id,
                             role: user.role,
+                            email: user.email,
                             firstname: user.firstname,
                             isVerified: user.isVerified,
                             schoolId: user.schoolId,
