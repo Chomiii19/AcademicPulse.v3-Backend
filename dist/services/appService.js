@@ -51,12 +51,13 @@ var AppService = /** @class */ (function () {
     }
     AppService.prototype.uploadProfilePic = function (req) {
         return __awaiter(this, void 0, void 0, function () {
+            var picture;
             var _a;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         if (!((_a = req.file) === null || _a === void 0 ? void 0 : _a.path))
-                            throw new appError_1.default("No profile picture provided", 400);
+                            throw new appError_1.default("No profile picture provided", 404);
                         console.log(req.file.path);
                         console.log(req.user.id);
                         return [4 /*yield*/, prisma.profilePictures.create({
@@ -66,7 +67,10 @@ var AppService = /** @class */ (function () {
                                 },
                             })];
                     case 1:
-                        _b.sent();
+                        picture = _b.sent();
+                        console.log(picture);
+                        if (!picture)
+                            throw new appError_1.default("Error in uploading photo ", 400);
                         return [2 /*return*/];
                 }
             });

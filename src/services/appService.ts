@@ -13,15 +13,18 @@ const prisma = new PrismaClient();
 
 class AppService {
   async uploadProfilePic(req: Request): Promise<void> {
-    if (!req.file?.path) throw new AppError("No profile picture provided", 400);
+    if (!req.file?.path) throw new AppError("No profile picture provided", 404);
     console.log(req.file.path);
     console.log(req.user.id);
-    await prisma.profilePictures.create({
+
+    const picture = await prisma.profilePictures.create({
       data: {
         userId: req.user.id,
         url: req.file.path,
       },
     });
+    console.log(picture);
+    if (!picture) throw new AppError("Error in uploading photo ", 400);
   }
 
   async getProfilePicture(req: Request): Promise<string> {
