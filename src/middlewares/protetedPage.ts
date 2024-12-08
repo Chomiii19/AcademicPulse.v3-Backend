@@ -8,6 +8,7 @@ const protectedPage = async (
   res: Response,
   next: NextFunction
 ) => {
+  console.log(req.user);
   const school = await prisma.school.findFirst({
     where: { schoolId: req.user.schoolId },
   });
