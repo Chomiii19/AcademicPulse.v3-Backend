@@ -12,13 +12,13 @@ const protectedPage = async (
     where: { schoolId: req.user.schoolId },
   });
 
-  const schoolName = school ? school.name : null;
+  const schoolId = school ? school.schoolId : null;
 
   const user = {
     role: req.user.role,
     firstname: req.user.firstname,
     isVerified: req.user.isVerified,
-    schoolName,
+    schoolId,
   };
 
   res.status(200).json({

@@ -105,7 +105,7 @@ var AuthService = /** @class */ (function () {
     };
     AuthService.prototype.findUserByEmailPassword = function (email, password) {
         return __awaiter(this, void 0, void 0, function () {
-            var user;
+            var user, currentUser;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, prisma.user.findFirst({ where: { email: email } })];
@@ -113,7 +113,13 @@ var AuthService = /** @class */ (function () {
                         user = _a.sent();
                         if (!user || !(0, bcryptjs_1.compareSync)(password, user.password))
                             throw new appError_1.default("Incorrect email or password", 400);
-                        return [2 /*return*/, user];
+                        currentUser = {
+                            role: user.role,
+                            firstname: user.firstname,
+                            isVerified: user.isVerified,
+                            schoolId: user.schoolId,
+                        };
+                        return [2 /*return*/, currentUser];
                 }
             });
         });

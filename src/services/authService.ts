@@ -65,13 +65,25 @@ class AuthService {
   async findUserByEmailPassword(
     email: string,
     password: string
-  ): Promise<IUser> {
+  ): Promise<{
+    role: number;
+    firstname: string;
+    isVerified: boolean;
+    schoolId: string | null;
+  }> {
     const user = await prisma.user.findFirst({ where: { email } });
 
     if (!user || !compareSync(password, user.password))
       throw new AppError("Incorrect email or password", 400);
 
-    return user;
+    const currentUser = {
+      role: user.role,
+      firstname: user.firstname,
+      isVerified: user.isVerified,
+      schoolId: user.schoolId,
+    };
+
+    return currentUser;
   }
 
   async verifyUser(token: string): Promise<void> {
