@@ -58,7 +58,7 @@ const verifyUserAccount = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     await AuthService.verifyUser(String(req.params.token));
 
-    res.redirect(`${process.env.APP_ORIGIN}/register-school`);
+    res.redirect(`${process.env.APP_ORIGIN}/profile-picture`);
   }
 );
 

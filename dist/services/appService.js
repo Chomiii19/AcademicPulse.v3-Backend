@@ -49,6 +49,48 @@ var prisma = new client_1.PrismaClient();
 var AppService = /** @class */ (function () {
     function AppService() {
     }
+    AppService.prototype.uploadProfilePic = function (req) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        if (!((_a = req.file) === null || _a === void 0 ? void 0 : _a.path))
+                            throw new appError_1.default("No profile picture provided", 400);
+                        return [4 /*yield*/, prisma.profilePictures.create({
+                                data: {
+                                    userId: req.user.id,
+                                    url: req.file.path,
+                                },
+                            })];
+                    case 1:
+                        _b.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    AppService.prototype.getProfilePicture = function (req) {
+        return __awaiter(this, void 0, void 0, function () {
+            var picture;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!req.user || !req.user.id)
+                            throw new appError_1.default("User not authenticated", 401);
+                        return [4 /*yield*/, prisma.profilePictures.findFirst({
+                                where: { userId: req.user.id },
+                                select: { url: true },
+                            })];
+                    case 1:
+                        picture = _a.sent();
+                        if (!picture)
+                            throw new appError_1.default("No profile picture found", 404);
+                        return [2 /*return*/, picture.url];
+                }
+            });
+        });
+    };
     AppService.prototype.registerSchool = function (req) {
         return __awaiter(this, void 0, void 0, function () {
             var _a, schoolId, name, address, email, token;

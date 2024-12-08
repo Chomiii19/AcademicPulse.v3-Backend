@@ -6,11 +6,16 @@ import uploadConfig from "../middlewares/uploadConfig";
 import { importData, deleteData } from "../controllers/importDeleteController";
 import * as studentController from "../controllers/studentController";
 import protectedPage from "../middlewares/protetedPage";
+import uploadPhoto from "../middlewares/uploadPhoto";
 
 const router = express.Router();
 
 router.route("/protected-page").get(protectedPage);
+router.route("/pictures").get(protectedPage);
 
+router
+  .route("/upload-photo/submit")
+  .post(uploadPhoto, appController.uploadProfilePicture);
 router
   .route("/id-validation/submit")
   .post(rateLimiter.validateIdLimiter, appController.validateId);

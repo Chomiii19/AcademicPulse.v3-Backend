@@ -9,7 +9,7 @@ var path_1 = __importDefault(require("path"));
 var appError_1 = __importDefault(require("../errors/appError"));
 var storage = multer_1.default.diskStorage({
     destination: function (req, file, cb) {
-        var uploadPath = path_1.default.resolve(process.cwd(), "dev-data/data/");
+        var uploadPath = path_1.default.resolve(process.cwd(), "dev-data/img/");
         if (!fs_1.default.existsSync(uploadPath)) {
             fs_1.default.mkdirSync(uploadPath, { recursive: true });
         }
@@ -22,8 +22,10 @@ var storage = multer_1.default.diskStorage({
 });
 var fileFilter = function (req, file, cb) {
     var allowedMimeTypes = [
-        "application/vnd.ms-excel",
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "image/jpeg",
+        "image/png",
+        "image/jpg",
+        "application/pdf",
     ];
     if (allowedMimeTypes.includes(file.mimetype)) {
         cb(null, true);
@@ -32,8 +34,8 @@ var fileFilter = function (req, file, cb) {
         cb(new appError_1.default("Invalid file type!", 400));
     }
 };
-var uploadConfig = (0, multer_1.default)({
+var uploadPhoto = (0, multer_1.default)({
     storage: storage,
     fileFilter: fileFilter,
 }).single("file");
-exports.default = uploadConfig;
+exports.default = uploadPhoto;

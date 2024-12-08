@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from "express";
+import path from "path";
+import fs from "fs";
 import { PrismaClient } from "@prisma/client";
 import catchAsync from "../utils/catchAsync";
 import AppService from "../services/appService";
@@ -7,6 +9,31 @@ import signToken from "../utils/signToken";
 import AppError from "../errors/appError";
 
 const prisma = new PrismaClient();
+
+const uploadProfilePicture = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    await AppService.uploadProfilePic(req);
+
+    res.status(200).json({
+      status: "Success",
+      message: "Profile picture successfully set.",
+    });
+  }
+);
+
+const getProfilePicture = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const url = await AppService.getProfilePicture(req);
+
+    const filePath = path.resolve(process.cwd(), url);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ message: "File not found on server" });
+    }
+
+    res.sendFile(filePath);
+  }
+);
 
 const registerSchool = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -260,6 +287,8 @@ const generateQrCode = catchAsync(
 );
 
 export {
+  uploadProfilePicture,
+  getProfilePicture,
   registerSchool,
   verifySchool,
   validateId,

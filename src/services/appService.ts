@@ -12,6 +12,31 @@ import signToken from "../utils/signToken";
 const prisma = new PrismaClient();
 
 class AppService {
+  async uploadProfilePic(req: Request): Promise<void> {
+    if (!req.file?.path) throw new AppError("No profile picture provided", 400);
+
+    await prisma.profilePictures.create({
+      data: {
+        userId: req.user.id,
+        url: req.file.path,
+      },
+    });
+  }
+
+  async getProfilePicture(req: Request): Promise<string> {
+    if (!req.user || !req.user.id)
+      throw new AppError("User not authenticated", 401);
+
+    const picture = await prisma.profilePictures.findFirst({
+      where: { userId: req.user.id },
+      select: { url: true },
+    });
+
+    if (!picture) throw new AppError("No profile picture found", 404);
+
+    return picture.url;
+  }
+
   async registerSchool(req: Request) {
     const { schoolId, name, address, email } = req.body;
 

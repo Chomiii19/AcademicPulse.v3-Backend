@@ -43,7 +43,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateQrCode = exports.schoolLogGraphData = exports.studentLogExit = exports.studentLogEntrance = exports.getStudentLogs = exports.getAllStudentsInSchoolStatus = exports.getAllStudentsInSchool = exports.countStudentsInSchool = exports.validatedIdGraphData = exports.validatedIdCount = exports.enrolledCount = exports.getAllCollaborators = exports.setUserRole = exports.acceptCollab = exports.addCollaborators = exports.validateId = exports.verifySchool = exports.registerSchool = void 0;
+exports.generateQrCode = exports.schoolLogGraphData = exports.studentLogExit = exports.studentLogEntrance = exports.getStudentLogs = exports.getAllStudentsInSchoolStatus = exports.getAllStudentsInSchool = exports.countStudentsInSchool = exports.validatedIdGraphData = exports.validatedIdCount = exports.enrolledCount = exports.getAllCollaborators = exports.setUserRole = exports.acceptCollab = exports.addCollaborators = exports.validateId = exports.verifySchool = exports.registerSchool = exports.getProfilePicture = exports.uploadProfilePicture = void 0;
+var path_1 = __importDefault(require("path"));
+var fs_1 = __importDefault(require("fs"));
 var client_1 = require("@prisma/client");
 var catchAsync_1 = __importDefault(require("../utils/catchAsync"));
 var appService_1 = __importDefault(require("../services/appService"));
@@ -51,6 +53,38 @@ var sendEmail_1 = __importDefault(require("../utils/sendEmail"));
 var signToken_1 = __importDefault(require("../utils/signToken"));
 var appError_1 = __importDefault(require("../errors/appError"));
 var prisma = new client_1.PrismaClient();
+var uploadProfilePicture = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, appService_1.default.uploadProfilePic(req)];
+            case 1:
+                _a.sent();
+                res.status(200).json({
+                    status: "Success",
+                    message: "Profile picture successfully set.",
+                });
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.uploadProfilePicture = uploadProfilePicture;
+var getProfilePicture = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var url, filePath;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, appService_1.default.getProfilePicture(req)];
+            case 1:
+                url = _a.sent();
+                filePath = path_1.default.resolve(process.cwd(), url);
+                if (!fs_1.default.existsSync(filePath)) {
+                    return [2 /*return*/, res.status(404).json({ message: "File not found on server" })];
+                }
+                res.sendFile(filePath);
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.getProfilePicture = getProfilePicture;
 var registerSchool = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var token;
     return __generator(this, function (_a) {

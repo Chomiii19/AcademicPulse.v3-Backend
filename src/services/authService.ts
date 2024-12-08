@@ -51,15 +51,6 @@ class AuthService {
       },
     });
 
-    const newUser = {
-      id: user.id,
-      role: user.role,
-      email: user.email,
-      firstname: user.firstname,
-      isVerified: user.isVerified,
-      schoolId: user.schoolId,
-    };
-
     return user;
   }
 

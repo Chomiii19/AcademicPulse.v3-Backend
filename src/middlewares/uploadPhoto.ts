@@ -5,7 +5,7 @@ import AppError from "../errors/appError";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadPath = path.resolve(process.cwd(), "dev-data/data/");
+    const uploadPath = path.resolve(process.cwd(), "dev-data/img/");
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath, { recursive: true });
     }
@@ -24,8 +24,10 @@ const fileFilter = function (
   cb: multer.FileFilterCallback
 ) {
   const allowedMimeTypes = [
-    "application/vnd.ms-excel",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "image/jpeg",
+    "image/png",
+    "image/jpg",
+    "application/pdf",
   ];
 
   if (allowedMimeTypes.includes(file.mimetype)) {
@@ -35,9 +37,9 @@ const fileFilter = function (
   }
 };
 
-const uploadConfig = multer({
+const uploadPhoto = multer({
   storage,
   fileFilter,
 }).single("file");
 
-export default uploadConfig;
+export default uploadPhoto;

@@ -34,8 +34,13 @@ var uploadConfig_1 = __importDefault(require("../middlewares/uploadConfig"));
 var importDeleteController_1 = require("../controllers/importDeleteController");
 var studentController = __importStar(require("../controllers/studentController"));
 var protetedPage_1 = __importDefault(require("../middlewares/protetedPage"));
+var uploadPhoto_1 = __importDefault(require("../middlewares/uploadPhoto"));
 var router = express_1.default.Router();
 router.route("/protected-page").get(protetedPage_1.default);
+router.route("/pictures").get(protetedPage_1.default);
+router
+    .route("/upload-photo/submit")
+    .post(uploadPhoto_1.default, appController.uploadProfilePicture);
 router
     .route("/id-validation/submit")
     .post(rateLimiter.validateIdLimiter, appController.validateId);
