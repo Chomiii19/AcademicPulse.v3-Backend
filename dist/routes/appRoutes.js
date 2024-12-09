@@ -75,6 +75,11 @@ router.route("/get-student").get(studentController.getStudent);
 router.route("/update-tudents").get(studentController.updateStudent);
 router.route("/delete-tudents").get(studentController.deleteStudent);
 //Graphs
-router.route("/school-logs-data").get(appController.schoolLogGraphData);
+router.route("/school-logs/yearly").get(appController.schoolLogGraphDataYearly);
+router
+    .route("/school-logs/monthly")
+    .get(appController.schoolLogGraphDataMonthly);
+router.route("/school-logs/daily").get(appController.schoolLogGraphDataDaily);
+router.route("/school-logs/weekly").get(appController.schoolLogGraphDataWeekly);
 router.route("/validated-ids-data").get(appController.validatedIdGraphData);
 exports.default = router;

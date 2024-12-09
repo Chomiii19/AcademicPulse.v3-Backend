@@ -301,8 +301,234 @@ const validatedIdGraphData = catchAsync(
   }
 );
 
-const schoolLogGraphData = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {}
+interface LogData {
+  entryTimes: number[];
+  exitTimes: number[];
+}
+
+type LogTimes = { [key: string]: number }; // This defines the type of the accumulator
+
+const getLogData = async (timeRange: { gte: Date }, schoolId: string) => {
+  console.log(timeRange);
+  const logs = await prisma.schoolLog.findMany({
+    where: {
+      schoolId,
+      timestamp: timeRange,
+    },
+    select: {
+      timestamp: true,
+      type: true,
+    },
+  });
+  console.log(logs);
+
+  const data = logs.reduce<{ [key: string]: LogData }>((acc, log) => {
+    const day = new Date(log.timestamp).toISOString().slice(0, 10); // YYYY-MM-DD
+    const hour = new Date(log.timestamp).getHours();
+    const minute = new Date(log.timestamp).getMinutes();
+    const type = log.type === "entry" ? "entry" : "exit";
+
+    if (!acc[day]) {
+      acc[day] = { entryTimes: [], exitTimes: [] };
+    }
+
+    if (type === "entry") {
+      acc[day].entryTimes.push(hour * 60 + minute);
+    } else {
+      acc[day].exitTimes.push(hour * 60 + minute);
+    }
+
+    return acc;
+  }, {});
+
+  return data;
+};
+
+const schoolLogGraphDataWeekly = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const today = new Date();
+    const sevenDaysAgo = new Date(today);
+    sevenDaysAgo.setDate(today.getDate() - 7);
+
+    const data = await getLogData({ gte: sevenDaysAgo }, req.user.schoolId);
+
+    const averages = Object.keys(data).map((day) => {
+      const entryAvg =
+        data[day].entryTimes.reduce((sum, time) => sum + time, 0) /
+        data[day].entryTimes.length;
+      const exitAvg =
+        data[day].exitTimes.reduce((sum, time) => sum + time, 0) /
+        data[day].exitTimes.length;
+
+      return {
+        day,
+        entryAvg: {
+          hour: Math.floor(entryAvg / 60),
+          minute: entryAvg % 60,
+        },
+        exitAvg: {
+          hour: Math.floor(exitAvg / 60),
+          minute: exitAvg % 60,
+        },
+      };
+    });
+
+    const entryTimes: LogTimes = averages.reduce((acc, { day, entryAvg }) => {
+      acc[day] = entryAvg.hour;
+      return acc;
+    }, {} as LogTimes);
+
+    const exitTimes: LogTimes = averages.reduce((acc, { day, exitAvg }) => {
+      acc[day] = exitAvg.hour;
+      return acc;
+    }, {} as LogTimes);
+
+    res.status(200).json({
+      entryTimes,
+      exitTimes,
+    });
+  }
+);
+
+// Monthly endpoint
+const schoolLogGraphDataMonthly = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const today = new Date();
+    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+    const data = await getLogData({ gte: firstDayOfMonth }, req.user.schoolId);
+
+    const averages = Object.keys(data).map((day) => {
+      const entryAvg =
+        data[day].entryTimes.reduce((sum, time) => sum + time, 0) /
+        data[day].entryTimes.length;
+      const exitAvg =
+        data[day].exitTimes.reduce((sum, time) => sum + time, 0) /
+        data[day].exitTimes.length;
+
+      return {
+        day,
+        entryAvg: {
+          hour: Math.floor(entryAvg / 60),
+          minute: entryAvg % 60,
+        },
+        exitAvg: {
+          hour: Math.floor(exitAvg / 60),
+          minute: exitAvg % 60,
+        },
+      };
+    });
+
+    const entryTimes: LogTimes = averages.reduce((acc, { day, entryAvg }) => {
+      const month = day.slice(5, 7); // Get the month portion (MM)
+      acc[month] = entryAvg.hour;
+      return acc;
+    }, {} as LogTimes);
+
+    const exitTimes: LogTimes = averages.reduce((acc, { day, exitAvg }) => {
+      const month = day.slice(5, 7); // Get the month portion (MM)
+      acc[month] = exitAvg.hour;
+      return acc;
+    }, {} as LogTimes);
+
+    res.status(200).json({
+      entryTimes,
+      exitTimes,
+    });
+  }
+);
+
+// Yearly endpoint
+const schoolLogGraphDataYearly = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const today = new Date();
+    const startOfYear = new Date(today.getFullYear(), 0, 1);
+
+    const data = await getLogData({ gte: startOfYear }, req.user.schoolId);
+
+    const averages = Object.keys(data).map((day) => {
+      const entryAvg =
+        data[day].entryTimes.reduce((sum, time) => sum + time, 0) /
+        data[day].entryTimes.length;
+      const exitAvg =
+        data[day].exitTimes.reduce((sum, time) => sum + time, 0) /
+        data[day].exitTimes.length;
+
+      return {
+        day,
+        entryAvg: {
+          hour: Math.floor(entryAvg / 60),
+          minute: entryAvg % 60,
+        },
+        exitAvg: {
+          hour: Math.floor(exitAvg / 60),
+          minute: exitAvg % 60,
+        },
+      };
+    });
+
+    const entryTimes: LogTimes = averages.reduce((acc, { day, entryAvg }) => {
+      const year = day.slice(0, 4); // Get the year portion (YYYY)
+      acc[year] = entryAvg.hour;
+      return acc;
+    }, {} as LogTimes);
+
+    const exitTimes: LogTimes = averages.reduce((acc, { day, exitAvg }) => {
+      const year = day.slice(0, 4); // Get the year portion (YYYY)
+      acc[year] = exitAvg.hour;
+      return acc;
+    }, {} as LogTimes);
+
+    res.status(200).json({
+      entryTimes,
+      exitTimes,
+    });
+  }
+);
+
+// Daily endpoint
+const schoolLogGraphDataDaily = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const today = new Date();
+
+    const data = await getLogData({ gte: today }, req.user.schoolId);
+
+    const averages = Object.keys(data).map((day) => {
+      const entryAvg =
+        data[day].entryTimes.reduce((sum, time) => sum + time, 0) /
+        data[day].entryTimes.length;
+      const exitAvg =
+        data[day].exitTimes.reduce((sum, time) => sum + time, 0) /
+        data[day].exitTimes.length;
+
+      return {
+        day,
+        entryAvg: {
+          hour: Math.floor(entryAvg / 60),
+          minute: entryAvg % 60,
+        },
+        exitAvg: {
+          hour: Math.floor(exitAvg / 60),
+          minute: exitAvg % 60,
+        },
+      };
+    });
+
+    const entryTimes = averages.reduce((acc, { day, entryAvg }) => {
+      acc[day] = entryAvg.hour;
+      return acc;
+    }, {} as { [key: string]: number });
+
+    const exitTimes = averages.reduce((acc, { day, exitAvg }) => {
+      acc[day] = exitAvg.hour;
+      return acc;
+    }, {} as { [key: string]: number });
+
+    res.status(200).json({
+      entryTimes,
+      exitTimes,
+    });
+  }
 );
 
 const generateQrCode = catchAsync(
@@ -337,6 +563,9 @@ export {
   getStudentLogs,
   studentLogEntrance,
   studentLogExit,
-  schoolLogGraphData, //Linegraph
+  schoolLogGraphDataYearly, //Linegraph
+  schoolLogGraphDataMonthly, //Linegraph
+  schoolLogGraphDataDaily, //Linegraph
+  schoolLogGraphDataWeekly, //Linegraph
   generateQrCode,
 };

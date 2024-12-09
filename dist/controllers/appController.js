@@ -43,7 +43,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateQrCode = exports.schoolLogGraphData = exports.studentLogExit = exports.studentLogEntrance = exports.getStudentLogs = exports.getAllStudentsInSchoolStatus = exports.getAllStudentsInSchool = exports.countStudentsInSchool = exports.validatedIdGraphData = exports.validatedIdCount = exports.enrolledCount = exports.getAllCollaborators = exports.setUserRole = exports.acceptCollab = exports.addCollaborators = exports.validateId = exports.verifySchool = exports.registerSchool = exports.getProfilePicture = exports.uploadProfilePicture = void 0;
+exports.generateQrCode = exports.schoolLogGraphDataWeekly = exports.schoolLogGraphDataDaily = exports.schoolLogGraphDataMonthly = exports.schoolLogGraphDataYearly = exports.studentLogExit = exports.studentLogEntrance = exports.getStudentLogs = exports.getAllStudentsInSchoolStatus = exports.getAllStudentsInSchool = exports.countStudentsInSchool = exports.validatedIdGraphData = exports.validatedIdCount = exports.enrolledCount = exports.getAllCollaborators = exports.setUserRole = exports.acceptCollab = exports.addCollaborators = exports.validateId = exports.verifySchool = exports.registerSchool = exports.getProfilePicture = exports.uploadProfilePicture = void 0;
 var path_1 = __importDefault(require("path"));
 var fs_1 = __importDefault(require("fs"));
 var client_1 = require("@prisma/client");
@@ -388,10 +388,236 @@ var validatedIdGraphData = (0, catchAsync_1.default)(function (req, res, next) {
     });
 }); });
 exports.validatedIdGraphData = validatedIdGraphData;
-var schoolLogGraphData = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
-    return [2 /*return*/];
-}); }); });
-exports.schoolLogGraphData = schoolLogGraphData;
+var getLogData = function (timeRange, schoolId) { return __awaiter(void 0, void 0, void 0, function () {
+    var logs, data;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                console.log(timeRange);
+                return [4 /*yield*/, prisma.schoolLog.findMany({
+                        where: {
+                            schoolId: schoolId,
+                            timestamp: timeRange,
+                        },
+                        select: {
+                            timestamp: true,
+                            type: true,
+                        },
+                    })];
+            case 1:
+                logs = _a.sent();
+                console.log(logs);
+                data = logs.reduce(function (acc, log) {
+                    var day = new Date(log.timestamp).toISOString().slice(0, 10); // YYYY-MM-DD
+                    var hour = new Date(log.timestamp).getHours();
+                    var minute = new Date(log.timestamp).getMinutes();
+                    var type = log.type === "entry" ? "entry" : "exit";
+                    if (!acc[day]) {
+                        acc[day] = { entryTimes: [], exitTimes: [] };
+                    }
+                    if (type === "entry") {
+                        acc[day].entryTimes.push(hour * 60 + minute);
+                    }
+                    else {
+                        acc[day].exitTimes.push(hour * 60 + minute);
+                    }
+                    return acc;
+                }, {});
+                return [2 /*return*/, data];
+        }
+    });
+}); };
+var schoolLogGraphDataWeekly = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var today, sevenDaysAgo, data, averages, entryTimes, exitTimes;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                today = new Date();
+                sevenDaysAgo = new Date(today);
+                sevenDaysAgo.setDate(today.getDate() - 7);
+                return [4 /*yield*/, getLogData({ gte: sevenDaysAgo }, req.user.schoolId)];
+            case 1:
+                data = _a.sent();
+                averages = Object.keys(data).map(function (day) {
+                    var entryAvg = data[day].entryTimes.reduce(function (sum, time) { return sum + time; }, 0) /
+                        data[day].entryTimes.length;
+                    var exitAvg = data[day].exitTimes.reduce(function (sum, time) { return sum + time; }, 0) /
+                        data[day].exitTimes.length;
+                    return {
+                        day: day,
+                        entryAvg: {
+                            hour: Math.floor(entryAvg / 60),
+                            minute: entryAvg % 60,
+                        },
+                        exitAvg: {
+                            hour: Math.floor(exitAvg / 60),
+                            minute: exitAvg % 60,
+                        },
+                    };
+                });
+                entryTimes = averages.reduce(function (acc, _a) {
+                    var day = _a.day, entryAvg = _a.entryAvg;
+                    acc[day] = entryAvg.hour;
+                    return acc;
+                }, {});
+                exitTimes = averages.reduce(function (acc, _a) {
+                    var day = _a.day, exitAvg = _a.exitAvg;
+                    acc[day] = exitAvg.hour;
+                    return acc;
+                }, {});
+                res.status(200).json({
+                    entryTimes: entryTimes,
+                    exitTimes: exitTimes,
+                });
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.schoolLogGraphDataWeekly = schoolLogGraphDataWeekly;
+// Monthly endpoint
+var schoolLogGraphDataMonthly = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var today, firstDayOfMonth, data, averages, entryTimes, exitTimes;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                today = new Date();
+                firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                return [4 /*yield*/, getLogData({ gte: firstDayOfMonth }, req.user.schoolId)];
+            case 1:
+                data = _a.sent();
+                averages = Object.keys(data).map(function (day) {
+                    var entryAvg = data[day].entryTimes.reduce(function (sum, time) { return sum + time; }, 0) /
+                        data[day].entryTimes.length;
+                    var exitAvg = data[day].exitTimes.reduce(function (sum, time) { return sum + time; }, 0) /
+                        data[day].exitTimes.length;
+                    return {
+                        day: day,
+                        entryAvg: {
+                            hour: Math.floor(entryAvg / 60),
+                            minute: entryAvg % 60,
+                        },
+                        exitAvg: {
+                            hour: Math.floor(exitAvg / 60),
+                            minute: exitAvg % 60,
+                        },
+                    };
+                });
+                entryTimes = averages.reduce(function (acc, _a) {
+                    var day = _a.day, entryAvg = _a.entryAvg;
+                    var month = day.slice(5, 7); // Get the month portion (MM)
+                    acc[month] = entryAvg.hour;
+                    return acc;
+                }, {});
+                exitTimes = averages.reduce(function (acc, _a) {
+                    var day = _a.day, exitAvg = _a.exitAvg;
+                    var month = day.slice(5, 7); // Get the month portion (MM)
+                    acc[month] = exitAvg.hour;
+                    return acc;
+                }, {});
+                res.status(200).json({
+                    entryTimes: entryTimes,
+                    exitTimes: exitTimes,
+                });
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.schoolLogGraphDataMonthly = schoolLogGraphDataMonthly;
+// Yearly endpoint
+var schoolLogGraphDataYearly = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var today, startOfYear, data, averages, entryTimes, exitTimes;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                today = new Date();
+                startOfYear = new Date(today.getFullYear(), 0, 1);
+                return [4 /*yield*/, getLogData({ gte: startOfYear }, req.user.schoolId)];
+            case 1:
+                data = _a.sent();
+                averages = Object.keys(data).map(function (day) {
+                    var entryAvg = data[day].entryTimes.reduce(function (sum, time) { return sum + time; }, 0) /
+                        data[day].entryTimes.length;
+                    var exitAvg = data[day].exitTimes.reduce(function (sum, time) { return sum + time; }, 0) /
+                        data[day].exitTimes.length;
+                    return {
+                        day: day,
+                        entryAvg: {
+                            hour: Math.floor(entryAvg / 60),
+                            minute: entryAvg % 60,
+                        },
+                        exitAvg: {
+                            hour: Math.floor(exitAvg / 60),
+                            minute: exitAvg % 60,
+                        },
+                    };
+                });
+                entryTimes = averages.reduce(function (acc, _a) {
+                    var day = _a.day, entryAvg = _a.entryAvg;
+                    var year = day.slice(0, 4); // Get the year portion (YYYY)
+                    acc[year] = entryAvg.hour;
+                    return acc;
+                }, {});
+                exitTimes = averages.reduce(function (acc, _a) {
+                    var day = _a.day, exitAvg = _a.exitAvg;
+                    var year = day.slice(0, 4); // Get the year portion (YYYY)
+                    acc[year] = exitAvg.hour;
+                    return acc;
+                }, {});
+                res.status(200).json({
+                    entryTimes: entryTimes,
+                    exitTimes: exitTimes,
+                });
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.schoolLogGraphDataYearly = schoolLogGraphDataYearly;
+// Daily endpoint
+var schoolLogGraphDataDaily = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var today, data, averages, entryTimes, exitTimes;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                today = new Date();
+                return [4 /*yield*/, getLogData({ gte: today }, req.user.schoolId)];
+            case 1:
+                data = _a.sent();
+                averages = Object.keys(data).map(function (day) {
+                    var entryAvg = data[day].entryTimes.reduce(function (sum, time) { return sum + time; }, 0) /
+                        data[day].entryTimes.length;
+                    var exitAvg = data[day].exitTimes.reduce(function (sum, time) { return sum + time; }, 0) /
+                        data[day].exitTimes.length;
+                    return {
+                        day: day,
+                        entryAvg: {
+                            hour: Math.floor(entryAvg / 60),
+                            minute: entryAvg % 60,
+                        },
+                        exitAvg: {
+                            hour: Math.floor(exitAvg / 60),
+                            minute: exitAvg % 60,
+                        },
+                    };
+                });
+                entryTimes = averages.reduce(function (acc, _a) {
+                    var day = _a.day, entryAvg = _a.entryAvg;
+                    acc[day] = entryAvg.hour;
+                    return acc;
+                }, {});
+                exitTimes = averages.reduce(function (acc, _a) {
+                    var day = _a.day, exitAvg = _a.exitAvg;
+                    acc[day] = exitAvg.hour;
+                    return acc;
+                }, {});
+                res.status(200).json({
+                    entryTimes: entryTimes,
+                    exitTimes: exitTimes,
+                });
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.schoolLogGraphDataDaily = schoolLogGraphDataDaily;
 var generateQrCode = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var zipBuffer;
     return __generator(this, function (_a) {
