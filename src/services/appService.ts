@@ -107,7 +107,7 @@ class AppService {
 
     await prisma.student.update({
       where: { id: student.id, studentId: student.studentId },
-      data: { isValidated: true },
+      data: { isValidated: true, validatedAt: new Date() },
     });
 
     return student;

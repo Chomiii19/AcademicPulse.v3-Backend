@@ -175,7 +175,7 @@ var AppService = /** @class */ (function () {
                             throw new appError_1.default("Student is not enrolled in this school", 401);
                         return [4 /*yield*/, prisma.student.update({
                                 where: { id: student.id, studentId: student.studentId },
-                                data: { isValidated: true },
+                                data: { isValidated: true, validatedAt: new Date() },
                             })];
                     case 3:
                         _a.sent();

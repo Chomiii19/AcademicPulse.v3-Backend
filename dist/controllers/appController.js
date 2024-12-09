@@ -352,9 +352,40 @@ var getStudentLogs = (0, catchAsync_1.default)(function (req, res, next) { retur
     });
 }); });
 exports.getStudentLogs = getStudentLogs;
-var validatedIdGraphData = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
-    return [2 /*return*/];
-}); }); });
+var validatedIdGraphData = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var validatedPerMonth, monthlyCounts;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, prisma.student.groupBy({
+                    by: ["validatedAt"],
+                    where: {
+                        schoolId: req.user.schoolId,
+                        isValidated: true,
+                    },
+                    _count: {
+                        _all: true,
+                    },
+                    orderBy: {
+                        validatedAt: "asc",
+                    },
+                })];
+            case 1:
+                validatedPerMonth = _a.sent();
+                monthlyCounts = validatedPerMonth.reduce(function (acc, record) {
+                    var month = record.validatedAt
+                        ? new Date(record.validatedAt).toISOString().slice(0, 7)
+                        : "Unknown";
+                    acc[month] = (acc[month] || 0) + record._count._all;
+                    return acc;
+                }, {});
+                res.status(200).json({
+                    status: "Success",
+                    data: monthlyCounts,
+                });
+                return [2 /*return*/];
+        }
+    });
+}); });
 exports.validatedIdGraphData = validatedIdGraphData;
 var schoolLogGraphData = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
     return [2 /*return*/];
