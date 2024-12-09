@@ -76,6 +76,7 @@ var getProfilePicture = (0, catchAsync_1.default)(function (req, res, next) { re
             case 1:
                 url = _a.sent();
                 filePath = path_1.default.resolve(process.cwd(), url);
+                console.log(filePath);
                 if (!fs_1.default.existsSync(filePath)) {
                     return [2 /*return*/, res.status(404).json({ message: "File not found on server" })];
                 }

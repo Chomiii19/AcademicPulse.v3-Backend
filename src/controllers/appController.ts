@@ -27,6 +27,7 @@ const getProfilePicture = catchAsync(
 
     const filePath = path.resolve(process.cwd(), url);
 
+    console.log(filePath);
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({ message: "File not found on server" });
     }
