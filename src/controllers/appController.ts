@@ -486,13 +486,79 @@ const schoolLogGraphDataYearly = catchAsync(
   }
 );
 
+const getLogDaily = async (
+  timeRange: { gte: Date; lte: Date },
+  schoolId: string
+) => {
+  console.log(timeRange);
+
+  const logs = await prisma.schoolLog.findMany({
+    where: {
+      schoolId, // School ID filter
+      timestamp: {
+        gte: timeRange.gte, // Start date
+        lte: timeRange.lte, // End date
+      },
+    },
+    select: {
+      timestamp: true, // Timestamp field
+      type: true, // Type field (entry or exit)
+    },
+  });
+
+  console.log(logs);
+
+  // Process logs into the desired structure
+  const data = logs.reduce<{ [key: string]: LogData }>((acc, log) => {
+    const day = new Date(log.timestamp).toISOString().slice(0, 10); // Format date as YYYY-MM-DD
+    const hour = new Date(log.timestamp).getHours(); // Extract hour
+    const minute = new Date(log.timestamp).getMinutes(); // Extract minute
+    const type = log.type === "entry" ? "entry" : "exit"; // Determine entry or exit
+
+    // Initialize day data if not yet added
+    if (!acc[day]) {
+      acc[day] = { entryTimes: [], exitTimes: [] };
+    }
+
+    // Push entry or exit time to respective arrays
+    if (type === "entry") {
+      acc[day].entryTimes.push(hour * 60 + minute); // Store time in minutes
+    } else {
+      acc[day].exitTimes.push(hour * 60 + minute); // Store time in minutes
+    }
+
+    return acc;
+  }, {});
+
+  return data;
+};
+
 // Daily endpoint
 const schoolLogGraphDataDaily = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    // Get the current date
     const today = new Date();
 
-    const data = await getLogData({ gte: today }, req.user.schoolId);
+    // Get the first day of the current month (set to 00:00:00)
+    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
+    // Get the last day of the current month (set to 23:59:59)
+    const lastDayOfMonth = new Date(
+      today.getFullYear(),
+      today.getMonth() + 1,
+      0,
+      23,
+      59,
+      59
+    );
+
+    // Fetch data for the current month, starting from the first day of the month
+    const data = await getLogDaily(
+      { gte: firstDayOfMonth, lte: lastDayOfMonth },
+      req.user.schoolId
+    );
+
+    // Calculate averages for each day
     const averages = Object.keys(data).map((day) => {
       const entryAvg =
         data[day].entryTimes.reduce((sum, time) => sum + time, 0) /
@@ -514,6 +580,7 @@ const schoolLogGraphDataDaily = catchAsync(
       };
     });
 
+    // Prepare the entry and exit times for the response
     const entryTimes = averages.reduce((acc, { day, entryAvg }) => {
       acc[day] = entryAvg.hour;
       return acc;
@@ -524,6 +591,7 @@ const schoolLogGraphDataDaily = catchAsync(
       return acc;
     }, {} as { [key: string]: number });
 
+    // Send the response with the calculated entry and exit times
     res.status(200).json({
       entryTimes,
       exitTimes,

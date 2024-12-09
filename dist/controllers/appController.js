@@ -572,14 +572,60 @@ var schoolLogGraphDataYearly = (0, catchAsync_1.default)(function (req, res, nex
     });
 }); });
 exports.schoolLogGraphDataYearly = schoolLogGraphDataYearly;
+var getLogDaily = function (timeRange, schoolId) { return __awaiter(void 0, void 0, void 0, function () {
+    var logs, data;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                console.log(timeRange);
+                return [4 /*yield*/, prisma.schoolLog.findMany({
+                        where: {
+                            schoolId: schoolId, // School ID filter
+                            timestamp: {
+                                gte: timeRange.gte, // Start date
+                                lte: timeRange.lte, // End date
+                            },
+                        },
+                        select: {
+                            timestamp: true, // Timestamp field
+                            type: true, // Type field (entry or exit)
+                        },
+                    })];
+            case 1:
+                logs = _a.sent();
+                console.log(logs);
+                data = logs.reduce(function (acc, log) {
+                    var day = new Date(log.timestamp).toISOString().slice(0, 10); // Format date as YYYY-MM-DD
+                    var hour = new Date(log.timestamp).getHours(); // Extract hour
+                    var minute = new Date(log.timestamp).getMinutes(); // Extract minute
+                    var type = log.type === "entry" ? "entry" : "exit"; // Determine entry or exit
+                    // Initialize day data if not yet added
+                    if (!acc[day]) {
+                        acc[day] = { entryTimes: [], exitTimes: [] };
+                    }
+                    // Push entry or exit time to respective arrays
+                    if (type === "entry") {
+                        acc[day].entryTimes.push(hour * 60 + minute); // Store time in minutes
+                    }
+                    else {
+                        acc[day].exitTimes.push(hour * 60 + minute); // Store time in minutes
+                    }
+                    return acc;
+                }, {});
+                return [2 /*return*/, data];
+        }
+    });
+}); };
 // Daily endpoint
 var schoolLogGraphDataDaily = (0, catchAsync_1.default)(function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var today, data, averages, entryTimes, exitTimes;
+    var today, firstDayOfMonth, lastDayOfMonth, data, averages, entryTimes, exitTimes;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 today = new Date();
-                return [4 /*yield*/, getLogData({ gte: today }, req.user.schoolId)];
+                firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59);
+                return [4 /*yield*/, getLogDaily({ gte: firstDayOfMonth, lte: lastDayOfMonth }, req.user.schoolId)];
             case 1:
                 data = _a.sent();
                 averages = Object.keys(data).map(function (day) {
@@ -609,6 +655,7 @@ var schoolLogGraphDataDaily = (0, catchAsync_1.default)(function (req, res, next
                     acc[day] = exitAvg.hour;
                     return acc;
                 }, {});
+                // Send the response with the calculated entry and exit times
                 res.status(200).json({
                     entryTimes: entryTimes,
                     exitTimes: exitTimes,
