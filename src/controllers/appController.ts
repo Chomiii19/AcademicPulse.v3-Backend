@@ -61,6 +61,7 @@ const verifySchool = catchAsync(
     res.status(200).json({
       status: "Success",
       message: "School successfully registered.",
+      school,
     });
   }
 );
