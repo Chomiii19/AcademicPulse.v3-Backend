@@ -59,7 +59,7 @@ class AppService {
     const token = req.params.token;
 
     const decoded = await verifyToken(token);
-
+    console.log("Decoded token: ", decoded);
     const school = await prisma.school.create({
       data: {
         schoolId: decoded.schoolId,
@@ -70,6 +70,7 @@ class AppService {
       },
     });
 
+    console.log("School: ", school);
     if (!school) throw new AppError("Failed to register school", 400);
 
     const user = await prisma.user.update({
