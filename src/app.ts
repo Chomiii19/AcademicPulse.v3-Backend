@@ -8,6 +8,7 @@ import userRoute from "./routes/userRoutes";
 import appRoute from "./routes/appRoutes";
 import protect from "./middlewares/protect";
 import io from "./server";
+import { verifySchool } from "./controllers/appController";
 
 const app = express();
 
@@ -32,6 +33,8 @@ app.get("/api/v1/refresh", (req, res) => {
 });
 app.use("/api/v1/user", protect, userRoute);
 app.use("/api/v1/app", protect, appRoute);
+app.use("/api/v1/app", protect, appRoute);
+app.get("api/v1/app/verify-school",verifySchool);
 app.all("*", (req: Request, res: Response, next: NextFunction) =>
   next(new AppError(`Can't find ${req.originalUrl} from the server`, 404))
 );

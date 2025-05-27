@@ -27,7 +27,6 @@ router.route("/delete-record").delete(deleteData);
 router
   .route("/register-school/submit")
   .post(uploadConfig, appController.registerSchool);
-router.route("/verify-school/:token").get(appController.verifySchool);
 router.route("/add-colaborators").post(appController.addCollaborators);
 router.route("/accept-collab/:token").get(appController.acceptCollab);
 router.route("/get-collaborators").get(appController.getAllCollaborators);
