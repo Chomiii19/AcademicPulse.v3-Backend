@@ -620,7 +620,7 @@ const getStudentLogsGroupedByDate = catchAsync(
     try {
       // Fetch logs for the given student, ordered by timestamp ascending
       const logs = await prisma.schoolLog.findMany({
-        where: { studentId },
+        where: { id: Number(studentId) },
         orderBy: { timestamp: "asc" },
         select: {
           timestamp: true,
