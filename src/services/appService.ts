@@ -279,6 +279,7 @@ class AppService {
 
   async getAllStudentsInSchoolStatus(req: Request): Promise<
     {
+      id: number;
       surname: string;
       firstname: string;
       course: string;
@@ -288,7 +289,13 @@ class AppService {
     const students = await prisma.student.findMany({
       where: { schoolId: req.user.schoolId },
       orderBy: { inSchool: "desc" },
-      select: { surname: true, firstname: true, course: true, inSchool: true },
+      select: {
+        id: true,
+        surname: true,
+        firstname: true,
+        course: true,
+        inSchool: true,
+      },
     });
 
     return students;
