@@ -613,12 +613,13 @@ const generateQrCode = catchAsync(
   }
 );
 
+import { toZonedTime, format } from "date-fns-tz";
+
 const getStudentLogsGroupedByDate = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { studentId } = req.body;
+    const { studentId } = req.params;
 
     try {
-      // Fetch logs for the given student, ordered by timestamp ascending
       const logs = await prisma.schoolLog.findMany({
         where: { studentId },
         orderBy: { timestamp: "asc" },
@@ -634,23 +635,27 @@ const getStudentLogsGroupedByDate = catchAsync(
           .json({ message: "No logs found for this student" });
       }
 
-      // Group logs by date string (YYYY-MM-DD)
+      const timezone = "Asia/Manila";
+
       const groupedLogs: Record<
         string,
         { entryTimes: string[]; exitTimes: string[] }
       > = {};
 
       logs.forEach(({ timestamp, type }) => {
-        const date = timestamp.toISOString().split("T")[0]; // extract date part only
-        const time = timestamp.toISOString().split("T")[1].slice(0, 8); // get HH:mm:ss
+        // Convert UTC timestamp to local Manila time
+        const localDate = toZonedTime(timestamp, timezone);
+
+        const date = format(localDate, "yyyy-MM-dd", { timeZone: timezone });
+        const time = format(localDate, "HH:mm:ss", { timeZone: timezone });
 
         if (!groupedLogs[date]) {
           groupedLogs[date] = { entryTimes: [], exitTimes: [] };
         }
 
-        if (type === Type.entry) {
+        if (type === "entry") {
           groupedLogs[date].entryTimes.push(time);
-        } else if (type === Type.exit) {
+        } else if (type === "exit") {
           groupedLogs[date].exitTimes.push(time);
         }
       });
