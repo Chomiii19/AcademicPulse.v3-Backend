@@ -63,6 +63,6 @@ router
 router.route("/school-logs/daily").get(appController.schoolLogGraphDataDaily);
 router.route("/school-logs/weekly").get(appController.schoolLogGraphDataWeekly);
 router.route("/validated-ids-data").get(appController.validatedIdGraphData);
-router.route("/:studentId/logs").get(appController.getStudentLogsGroupedByDate);
+router.route("/student/logs").get(appController.getStudentLogsGroupedByDate);
 
 export default router;

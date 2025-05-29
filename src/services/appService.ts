@@ -279,7 +279,7 @@ class AppService {
 
   async getAllStudentsInSchoolStatus(req: Request): Promise<
     {
-      id: number;
+      studentId: string;
       surname: string;
       firstname: string;
       course: string;
@@ -290,7 +290,7 @@ class AppService {
       where: { schoolId: req.user.schoolId },
       orderBy: { inSchool: "desc" },
       select: {
-        id: true,
+        studentId: true,
         surname: true,
         firstname: true,
         course: true,

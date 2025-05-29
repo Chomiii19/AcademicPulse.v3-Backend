@@ -615,12 +615,12 @@ const generateQrCode = catchAsync(
 
 const getStudentLogsGroupedByDate = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { studentId } = req.params;
+    const { studentId } = req.body;
 
     try {
       // Fetch logs for the given student, ordered by timestamp ascending
       const logs = await prisma.schoolLog.findMany({
-        where: { id: Number(studentId) },
+        where: { studentId },
         orderBy: { timestamp: "asc" },
         select: {
           timestamp: true,
