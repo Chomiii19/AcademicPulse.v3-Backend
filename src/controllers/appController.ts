@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import path from "path";
 import fs from "fs";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Type } from "@prisma/client";
 import catchAsync from "../utils/catchAsync";
 import AppService from "../services/appService";
 import sendMail from "../utils/sendEmail";
@@ -610,6 +610,56 @@ const generateQrCode = catchAsync(
     );
     res.setHeader("Content-Type", "application/zip");
     res.status(200).send(zipBuffer);
+  }
+);
+
+const getStudentLogsGroupedByDate = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { studentId } = req.params;
+
+    try {
+      // Fetch logs for the given student, ordered by timestamp ascending
+      const logs = await prisma.schoolLog.findMany({
+        where: { studentId },
+        orderBy: { timestamp: "asc" },
+        select: {
+          timestamp: true,
+          type: true,
+        },
+      });
+
+      if (!logs.length) {
+        return res
+          .status(404)
+          .json({ message: "No logs found for this student" });
+      }
+
+      // Group logs by date string (YYYY-MM-DD)
+      const groupedLogs: Record<
+        string,
+        { entryTimes: string[]; exitTimes: string[] }
+      > = {};
+
+      logs.forEach(({ timestamp, type }) => {
+        const date = timestamp.toISOString().split("T")[0]; // extract date part only
+        const time = timestamp.toISOString().split("T")[1].slice(0, 8); // get HH:mm:ss
+
+        if (!groupedLogs[date]) {
+          groupedLogs[date] = { entryTimes: [], exitTimes: [] };
+        }
+
+        if (type === Type.entry) {
+          groupedLogs[date].entryTimes.push(time);
+        } else if (type === Type.exit) {
+          groupedLogs[date].exitTimes.push(time);
+        }
+      });
+
+      return res.json(groupedLogs);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
   }
 );
 
