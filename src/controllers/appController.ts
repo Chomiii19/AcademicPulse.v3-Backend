@@ -687,4 +687,5 @@ export {
   schoolLogGraphDataDaily, //Linegraph
   schoolLogGraphDataWeekly, //Linegraph
   generateQrCode,
+  getStudentLogsGroupedByDate,
 };
