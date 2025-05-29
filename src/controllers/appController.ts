@@ -617,7 +617,7 @@ import { toZonedTime, format } from "date-fns-tz";
 
 const getStudentLogsGroupedByDate = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { studentId } = req.params;
+    const { studentId } = req.body;
 
     try {
       const logs = await prisma.schoolLog.findMany({
